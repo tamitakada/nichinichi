@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:nichinichi/constants.dart';
 import 'dart:math';
 
 class DayView extends StatelessWidget {
 
   final int day;
-  final int? completionLevel;
+  final CompletionLevel completionLevel;
 
   const DayView({ super.key, required this.day, required this.completionLevel });
 
   Widget buildStamp() {
     switch (completionLevel) {
-      case null:
-        return Transform.rotate(
-          angle: pi / 4,
-          child: Container(
-            height: 20,
-            width: 10,
-            color: Colors.white,
+      case CompletionLevel.noData:
+        return Center(
+          child: Transform.rotate(
+            angle: pi / 5,
+            child: Container(
+              height: 40,
+              width: 2,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(2)
+              ),
+            ),
           ),
+        );
+      case CompletionLevel.low:
+        return CircleAvatar(
+          backgroundImage: NetworkImage(""),
         );
       default:
         return Container();

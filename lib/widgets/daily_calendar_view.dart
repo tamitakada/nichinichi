@@ -51,7 +51,7 @@ class _DailyCalendarViewState extends State<DailyCalendarView> {
                         if (snapshot.hasData) {
                           if (snapshot.data != null) {
                             return Expanded(
-                              child: CalendarView(date: DateTime.now(), completionData: snapshot.data!)
+                              child: CalendarView(date: DateTime.now(), completionData: snapshot.data!, daily: _currentDaily!,)
                             );
                           } else {
                             return Text("error!!!");

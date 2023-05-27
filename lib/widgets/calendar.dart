@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'day_view.dart';
 import 'package:nichinichi/models/models.dart';
+import 'package:nichinichi/daily_stats_mixin.dart';
 
-class CalendarView extends StatelessWidget {
+class CalendarView extends StatelessWidget with DailyStats {
 
   final DateTime date;
+  final Daily daily;
   final Map<int, TodoList> completionData;
 
-  const CalendarView({ super.key, required this.date, required this.completionData });
+  const CalendarView({ super.key, required this.date, required this.daily, required this.completionData });
 
   List<Widget> buildWeek(int firstWeekday, int firstDay, int numDays) {
     List<Widget> days = [];
@@ -15,7 +17,8 @@ class CalendarView extends StatelessWidget {
       if (i < firstWeekday || i > numDays) {
         days.add(Expanded(child: Container()));
       } else {
-        days.add(Expanded(child: DayView(day: firstDay - firstWeekday + i, completionLevel: 0)));
+        int day = firstDay - firstWeekday + i;
+        days.add(Expanded(child: DayView(day: day, completionLevel: getDailyCompletionLevel(completionData[day], daily))));
       }
     }
     return days;
