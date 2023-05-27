@@ -57,9 +57,9 @@ class DataManager {
   static Future<Map<int, TodoList>?> getListsForDaily(int year, int month, Daily daily) async {
     try {
       List<TodoList> lists = await (await isar).todoLists.filter()
-        .completeDailies((q) => q.idEqualTo(daily.id))
+        .completeDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
         .or()
-        .incompleteDailies((q) => q.idEqualTo(daily.id))
+        .incompleteDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
         .dateBetween(DateTime(year, month), DateTime(year, month, DateTime(year, month + 1, 0).day))
         .findAll();
       Map<int, TodoList> listCalendar = {};
