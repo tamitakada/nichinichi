@@ -1,32 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_manager.dart';
-import 'item_view.dart';
-import 'package:nichinichi/data_manager.dart';
+import '../../widgets/item_view.dart';
+import 'base_component.dart';
 
-class TodoView extends StatefulWidget {
+class TodoComponent extends StatefulWidget {
   
-  const TodoView({Key? key}) : super(key: key);
+  const TodoComponent({Key? key}) : super(key: key);
 
   @override
-  State<TodoView> createState() => _TodoViewState();
+  State<TodoComponent> createState() => _TodoComponentState();
 }
 
-class _TodoViewState extends State<TodoView> {
+class _TodoComponentState extends State<TodoComponent> {
   
   late TodoList _todaysList;
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minWidth: 300),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.white, width: 2),
-          right: BorderSide(color: Colors.white, width: 2),
-        )
-      ),
-      padding: const EdgeInsets.fromLTRB(0, 20, 20, 0),
+    return BaseComponent(
       child: Column(
         children: [
           Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
@@ -53,7 +45,7 @@ class _TodoViewState extends State<TodoView> {
                               _todaysList.completeDailies.add(_todaysList.incompleteDailies.elementAt(index - 1));
                               _todaysList.incompleteDailies.remove(_todaysList.incompleteDailies.elementAt(index - 1));
                               DataManager.upsertList(_todaysList).then(
-                                (success) { if (success) setState(() {}); }
+                                      (success) { if (success) setState(() {}); }
                               );
                             },
                           );
@@ -65,18 +57,18 @@ class _TodoViewState extends State<TodoView> {
                               children: [
                                 Text("SINGLES", style: Theme.of(context).textTheme.headlineSmall,),
                                 IconButton(
-                                  onPressed: () {
-                                    Item newItem = Item(description: "", notes: "", order: _todaysList.incompleteSingles.length);
-                                    DataManager.upsertItem(newItem).then(
-                                      (success) {
-                                        if (success) {
-                                          _todaysList.incompleteSingles.add(newItem);
-                                          DataManager.upsertList(_todaysList).then((success) { if (success) setState(() {}); });
-                                        }
-                                      }
-                                    );
-                                  },
-                                  icon: const Icon(Icons.add, color: Colors.white, size: 18,)
+                                    onPressed: () {
+                                      Item newItem = Item(description: "", notes: "", order: _todaysList.incompleteSingles.length);
+                                      DataManager.upsertItem(newItem).then(
+                                              (success) {
+                                            if (success) {
+                                              _todaysList.incompleteSingles.add(newItem);
+                                              DataManager.upsertList(_todaysList).then((success) { if (success) setState(() {}); });
+                                            }
+                                          }
+                                      );
+                                    },
+                                    icon: const Icon(Icons.add, color: Colors.white, size: 18,)
                                 )
                               ],
                             ),
@@ -91,12 +83,12 @@ class _TodoViewState extends State<TodoView> {
                             },
                             onSubmitted: (String text) {
                               DataManager.getItem(_todaysList.incompleteSingles.elementAt(index - _todaysList.incompleteDailies.length - 2).id).then(
-                                (item) {
-                                  if (item != null) {
-                                    item.description = text;
-                                    DataManager.upsertItem(item).then( (success) { if (success) { setState(() {}); } } );
+                                      (item) {
+                                    if (item != null) {
+                                      item.description = text;
+                                      DataManager.upsertItem(item).then( (success) { if (success) { setState(() {}); } } );
+                                    }
                                   }
-                                }
                               );
                             },
                           );
@@ -112,7 +104,7 @@ class _TodoViewState extends State<TodoView> {
                               _todaysList.incompleteDailies.add(_todaysList.completeDailies.elementAt(index - _todaysList.incompleteDailies.length - _todaysList.incompleteSingles.length - 3));
                               _todaysList.completeDailies.remove(_todaysList.completeDailies.elementAt(index - _todaysList.incompleteDailies.length - _todaysList.incompleteSingles.length - 2));
                               DataManager.upsertList(_todaysList).then(
-                                (success) { if (success) setState(() {}); }
+                                      (success) { if (success) setState(() {}); }
                               );
                             },
                           );

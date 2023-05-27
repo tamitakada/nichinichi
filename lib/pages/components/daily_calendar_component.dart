@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/data_manager.dart';
-import 'calendar.dart';
+import '../../widgets/calendar.dart';
 import 'package:nichinichi/models/models.dart';
+import 'base_component.dart';
 
-class DailyCalendarView extends StatefulWidget {
+class DailyCalendarComponent extends StatefulWidget {
 
-  const DailyCalendarView({Key? key}) : super(key: key);
+  const DailyCalendarComponent({Key? key}) : super(key: key);
 
   @override
-  State<DailyCalendarView> createState() => _DailyCalendarViewState();
+  State<DailyCalendarComponent> createState() => _DailyCalendarComponentState();
 }
 
-class _DailyCalendarViewState extends State<DailyCalendarView> {
+class _DailyCalendarComponentState extends State<DailyCalendarComponent> {
 
   Daily? _currentDaily;
   int _currentYear = DateTime.now().year;
@@ -19,14 +20,7 @@ class _DailyCalendarViewState extends State<DailyCalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.white, width: 2),
-          right: BorderSide(color: Colors.white, width: 2),
-        )
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+    return BaseComponent(
       child: FutureBuilder<List<Daily>?>(
         future: DataManager.getAllDailies(),
         builder: (BuildContext context, AsyncSnapshot<List<Daily>?> snapshot) {
@@ -45,13 +39,13 @@ class _DailyCalendarViewState extends State<DailyCalendarView> {
                   //   onChanged: (Daily? daily) {}
                   // ),
                   (_currentDaily != null)
-                    ? FutureBuilder<Map<int, TodoList>?>(
+                      ? FutureBuilder<Map<int, TodoList>?>(
                       future: DataManager.getListsForDaily(_currentYear, _currentMonth, _currentDaily!),
                       builder: (BuildContext context, AsyncSnapshot<Map<int, TodoList>?> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data != null) {
                             return Expanded(
-                              child: CalendarView(date: DateTime.now(), completionData: snapshot.data!, daily: _currentDaily!,)
+                                child: CalendarView(date: DateTime.now(), completionData: snapshot.data!, daily: _currentDaily!,)
                             );
                           } else {
                             return Text("error!!!");
@@ -60,8 +54,8 @@ class _DailyCalendarViewState extends State<DailyCalendarView> {
                           return Text("loading...");
                         }
                       }
-                    )
-                    : Container(),
+                  )
+                      : Container(),
                   const SizedBox(height: 20),
                 ],
               );

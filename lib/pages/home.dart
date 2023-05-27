@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/widgets/todo_view.dart';
 import 'package:nichinichi/constants.dart';
-import 'package:nichinichi/widgets/add_daily_view.dart';
-import 'package:nichinichi/widgets/daily_calendar_view.dart';
+import 'components/components.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -40,15 +38,16 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
               flex: 1,
-              child: TodoView(),
+              child: TodoComponent(),
             ),
+            SizedBox(width: 20,),
             Expanded(
               flex: 2,
-              child: DailyCalendarView(),
+              child: DailyCalendarComponent(),
             )
           ],
         )
-        : AddDailyView(close: () { setState(() {
+        : AddDailyComponent(close: () { setState(() {
           _pageNumber = 0;
         }); }),
       )
