@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          hintStyle: TextStyle(fontFamily: "Zen", color: Colors.white30, letterSpacing: 2)
+          hintStyle: const TextStyle(fontFamily: "Zen", color: Colors.white30, letterSpacing: 2)
         ),
         textTheme: const TextTheme(
           headlineLarge: TextStyle(fontFamily: "TimeMachine", color: Colors.white, letterSpacing: 10, fontSize: 20, fontWeight: FontWeight.bold),
