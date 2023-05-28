@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nichinichi/extensions.dart';
 import 'base_component.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class AddDailyComponent extends StatefulWidget {
 
@@ -24,6 +24,7 @@ class _AddDailyComponentState extends State<AddDailyComponent> {
   List<TextEditingController> _itemControllers = [TextEditingController()];
 
   Color _currentColor = Colors.white;
+  Offset _currentPosition = Offset(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -102,24 +103,26 @@ class _AddDailyComponentState extends State<AddDailyComponent> {
                       context: context,
                       builder: (BuildContext context) {
                         return Dialog(
-                            child: Container(
-                              width: 200,
-                              child: SingleChildScrollView(
-                                child: ColorPicker(
-                                  pickerColor: _currentColor,
-                                  onColorChanged: (Color color) {
-                                    setState(() { _currentColor = color; });
-                                  },
-                                  labelTypes: [],
-                                  enableAlpha: false,
-                                  portraitOnly: true,
-                                  colorPickerWidth: 300,
-                                  displayThumbColor: false,
-                                  paletteType: PaletteType.hueWheel,
-                                  pickerAreaHeightPercent: 0.7,
-                                ),
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          child: Container(
+                            width: 250,
+                            child: SingleChildScrollView(
+                              child: ColorPicker(
+                                pickerColor: _currentColor,
+                                paletteType: PaletteType.hueWheel,
+                                portraitOnly: true,
+                                labelTypes: [],
+                                colorPickerWidth: 250,
+                                enableAlpha: false,
+                                onColorChanged: (color) {
+                                  setState(() {
+                                    _currentColor = color;
+                                  });
+                                },
                               ),
-                            )
+                            ),
+                          )
                         );
                       },
                     );

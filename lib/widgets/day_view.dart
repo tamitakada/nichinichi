@@ -26,9 +26,7 @@ class DayView extends StatelessWidget {
           ),
         );
       case CompletionLevel.low:
-        return CircleAvatar(
-          backgroundImage: NetworkImage(""),
-        );
+        return CircleAvatar();
       default:
         return Container();
     }

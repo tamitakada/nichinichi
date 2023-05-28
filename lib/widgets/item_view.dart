@@ -57,11 +57,10 @@ class IncompleteItemView extends StatelessWidget {
 
 class CompleteItemView extends StatelessWidget {
 
-  final Daily? daily;
   final Item item;
   final void Function() onTap;
 
-  const CompleteItemView({ super.key, required this.item, required this.onTap, this.daily });
+  const CompleteItemView({ super.key, required this.item, required this.onTap });
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +68,16 @@ class CompleteItemView extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: daily != null ? ColorConverter.parse(daily?.color ?? "33CCD6") : Colors.white, width: 2),
+          border: Border.all(color: item.daily.value != null ? ColorConverter.parse(item.daily.value?.color ?? "33CCD6") : Colors.white, width: 2),
           borderRadius: BorderRadius.circular(10),
-          color: daily != null ? ColorConverter.parse(daily?.color ?? "33CCD6").withAlpha(30) : Colors.white24,
+          color: item.daily.value != null ? ColorConverter.parse(item.daily.value?.color ?? "33CCD6").withAlpha(30) : Colors.white24,
         ),
         margin: const EdgeInsets.symmetric(vertical: 5),
         padding: const EdgeInsets.all(8),
         child: Text(
           item.description ?? "",
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: daily != null ? ColorConverter.parse(daily?.color ?? "33CCD6") : Colors.white,
+            color: item.daily.value != null ? ColorConverter.parse(item.daily.value?.color ?? "33CCD6") : Colors.white,
           )
         ),
       ),

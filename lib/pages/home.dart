@@ -23,6 +23,12 @@ class _HomePageState extends State<HomePage> {
               setState(() { _pageNumber = 1; });
             },
             icon: Icon(Icons.add, color: Colors.white,)
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() { _pageNumber = 2; });
+            },
+            icon: Icon(Icons.settings, color: Colors.white,)
           )
         ],
         centerTitle: false,
@@ -47,9 +53,13 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         )
-        : AddDailyComponent(close: () { setState(() {
-          _pageNumber = 0;
-        }); }),
+        : _pageNumber == 1 ?
+          AddDailyComponent(close: () { setState(() {
+            _pageNumber = 0;
+          }); })
+            : ThemeComponent(close: () { setState(() {
+              _pageNumber = 0;
+            }); })
       )
     );
   }
