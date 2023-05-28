@@ -4,8 +4,9 @@
 Available for MacOS/Linux/Windows.
 
 ## Features
-* Fresh todo list everyday to track tasks for each day
-* **Dailies** to track long-term habits that will auto-add daily tasks everyday
+* Fresh todo list everyday
+* Past to do list stats
+* **Dailies** to track long-term habits and auto-add daily tasks
 * Customizable stamps to celebrate task completion
 * Sleek & simple design
 
