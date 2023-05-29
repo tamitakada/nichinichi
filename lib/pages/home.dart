@@ -41,16 +41,14 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         child: _pageNumber == 0
           ? Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
               flex: 1,
               child: TodoComponent(),
             ),
             SizedBox(width: 20,),
-            Expanded(
-              flex: 2,
-              child: DailyCalendarComponent(),
-            )
+            Expanded(flex: 2, child: DailyCalendarComponent(),),
           ],
         )
         : _pageNumber == 1 ?

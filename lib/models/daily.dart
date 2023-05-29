@@ -19,4 +19,10 @@ class Daily {
 
   Daily({ required this.title, required this.startDate, this.endDate, this.color = "33CCD6" });
 
+  @override
+  bool operator ==(dynamic other) => other != null && other is Daily && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
+
 }

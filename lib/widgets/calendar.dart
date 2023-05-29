@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'day_view.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/daily_stats_mixin.dart';
+import 'package:nichinichi/utils/daily_stats_mixin.dart';
 
 class CalendarView extends StatelessWidget with DailyStats {
 
@@ -38,7 +38,7 @@ class CalendarView extends StatelessWidget with DailyStats {
         if (firstWeekday == 7) firstWeekday = 0; // Sunday -> 0th day
         daysInWeek = 7 - firstWeekday;
       } else if (daysInMonth - daysCounted < 7) { daysInWeek = daysInMonth - daysCounted; }
-      weeks.add(Expanded(child: Row(children: buildWeek(firstWeekday, daysCounted, daysInWeek))));
+      weeks.add(Row(children: buildWeek(firstWeekday, daysCounted, daysInWeek)));
       daysCounted += daysInWeek;
     }
     return weeks;
@@ -47,7 +47,6 @@ class CalendarView extends StatelessWidget with DailyStats {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: buildWeeks(),
     );
   }

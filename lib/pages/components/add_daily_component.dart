@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/extensions.dart';
+import 'package:nichinichi/utils/extensions.dart';
 import 'base_component.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 

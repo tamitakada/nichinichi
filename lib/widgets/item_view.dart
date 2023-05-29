@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/extensions.dart';
+import 'package:nichinichi/utils/extensions.dart';
 import 'package:nichinichi/data_manager.dart';
 
 class IncompleteItemView extends StatelessWidget {

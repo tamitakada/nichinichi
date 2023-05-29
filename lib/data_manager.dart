@@ -1,7 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:nichinichi/models/models.dart';
-import 'extensions.dart';
 
 class DataManager {
 
@@ -57,9 +56,12 @@ class DataManager {
   static Future<Map<int, TodoList>?> getListsForDaily(int year, int month, Daily daily) async {
     try {
       List<TodoList> lists = await (await isar).todoLists.filter()
-        .completeDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
-        .or()
-        .incompleteDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
+        .group(
+          (q) => q
+            .completeDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
+            .or()
+            .incompleteDailies((q) => q.daily((q) => q.idEqualTo(daily.id)))
+        )
         .dateBetween(DateTime(year, month), DateTime(year, month, DateTime(year, month + 1, 0).day))
         .findAll();
       Map<int, TodoList> listCalendar = {};

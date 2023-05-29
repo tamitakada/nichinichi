@@ -1,5 +1,5 @@
 import 'package:nichinichi/models/models.dart';
-import 'constants.dart';
+import '../constants.dart';
 
 mixin DailyStats {
 
