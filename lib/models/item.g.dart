@@ -26,11 +26,6 @@ const ItemSchema = CollectionSchema(
       id: 1,
       name: r'notes',
       type: IsarType.string,
-    ),
-    r'order': PropertySchema(
-      id: 2,
-      name: r'order',
-      type: IsarType.long,
     )
   },
   estimateSize: _itemEstimateSize,
@@ -83,7 +78,6 @@ void _itemSerialize(
 ) {
   writer.writeString(offsets[0], object.description);
   writer.writeString(offsets[1], object.notes);
-  writer.writeLong(offsets[2], object.order);
 }
 
 Item _itemDeserialize(
@@ -95,7 +89,6 @@ Item _itemDeserialize(
   final object = Item(
     description: reader.readStringOrNull(offsets[0]),
     notes: reader.readStringOrNull(offsets[1]),
-    order: reader.readLongOrNull(offsets[2]),
   );
   object.id = id;
   return object;
@@ -112,8 +105,6 @@ P _itemDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
-    case 2:
-      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -549,74 +540,6 @@ extension ItemQueryFilter on QueryBuilder<Item, Item, QFilterCondition> {
       ));
     });
   }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'order',
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'order',
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderEqualTo(int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'order',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'order',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'order',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> orderBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'order',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
 }
 
 extension ItemQueryObject on QueryBuilder<Item, Item, QFilterCondition> {}
@@ -659,18 +582,6 @@ extension ItemQuerySortBy on QueryBuilder<Item, Item, QSortBy> {
       return query.addSortBy(r'notes', Sort.desc);
     });
   }
-
-  QueryBuilder<Item, Item, QAfterSortBy> sortByOrder() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'order', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterSortBy> sortByOrderDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'order', Sort.desc);
-    });
-  }
 }
 
 extension ItemQuerySortThenBy on QueryBuilder<Item, Item, QSortThenBy> {
@@ -709,18 +620,6 @@ extension ItemQuerySortThenBy on QueryBuilder<Item, Item, QSortThenBy> {
       return query.addSortBy(r'notes', Sort.desc);
     });
   }
-
-  QueryBuilder<Item, Item, QAfterSortBy> thenByOrder() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'order', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterSortBy> thenByOrderDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'order', Sort.desc);
-    });
-  }
 }
 
 extension ItemQueryWhereDistinct on QueryBuilder<Item, Item, QDistinct> {
@@ -735,12 +634,6 @@ extension ItemQueryWhereDistinct on QueryBuilder<Item, Item, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Item, Item, QDistinct> distinctByOrder() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'order');
     });
   }
 }
@@ -761,12 +654,6 @@ extension ItemQueryProperty on QueryBuilder<Item, Item, QQueryProperty> {
   QueryBuilder<Item, String?, QQueryOperations> notesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'notes');
-    });
-  }
-
-  QueryBuilder<Item, int?, QQueryOperations> orderProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'order');
     });
   }
 }

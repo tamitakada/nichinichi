@@ -138,4 +138,19 @@ class DataManager {
     } catch (e) { print(e); return false; }
   }
 
+  static Future<bool> deleteItemFromList(Item item, TodoList list) async {
+    try {
+      if (item.daily.value != null) {
+        list.incompleteDailies.remove(item);
+        return await upsertList(list);
+      } else {
+        list.incompleteSingles.remove(item);
+        (await isar).writeTxn(() async {
+          (await isar).items.delete(item.id);
+        });
+        return true;
+      }
+    } catch (e) { print(e); return false; }
+  }
+
 }

@@ -10,10 +10,9 @@ class Item {
 
   String? description;
   String? notes;
-  int? order;
 
   final daily = IsarLink<Daily>();
 
-  Item({ this.description, this.notes, this.order });
+  Item({ this.description, this.notes });
 
 }

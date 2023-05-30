@@ -27,13 +27,18 @@ const DailySchema = CollectionSchema(
       name: r'endDate',
       type: IsarType.dateTime,
     ),
-    r'startDate': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 2,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'startDate': PropertySchema(
+      id: 3,
       name: r'startDate',
       type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'title',
       type: IsarType.string,
     )
@@ -79,8 +84,9 @@ void _dailySerialize(
 ) {
   writer.writeString(offsets[0], object.color);
   writer.writeDateTime(offsets[1], object.endDate);
-  writer.writeDateTime(offsets[2], object.startDate);
-  writer.writeString(offsets[3], object.title);
+  writer.writeLong(offsets[2], object.hashCode);
+  writer.writeDateTime(offsets[3], object.startDate);
+  writer.writeString(offsets[4], object.title);
 }
 
 Daily _dailyDeserialize(
@@ -92,8 +98,8 @@ Daily _dailyDeserialize(
   final object = Daily(
     color: reader.readStringOrNull(offsets[0]) ?? "33CCD6",
     endDate: reader.readDateTimeOrNull(offsets[1]),
-    startDate: reader.readDateTime(offsets[2]),
-    title: reader.readString(offsets[3]),
+    startDate: reader.readDateTime(offsets[3]),
+    title: reader.readString(offsets[4]),
   );
   object.id = id;
   return object;
@@ -111,8 +117,10 @@ P _dailyDeserializeProp<P>(
     case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
+      return (reader.readDateTime(offset)) as P;
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -397,6 +405,58 @@ extension DailyQueryFilter on QueryBuilder<Daily, Daily, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'endDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> hashCodeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -723,6 +783,18 @@ extension DailyQuerySortBy on QueryBuilder<Daily, Daily, QSortBy> {
     });
   }
 
+  QueryBuilder<Daily, Daily, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<Daily, Daily, QAfterSortBy> sortByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'startDate', Sort.asc);
@@ -770,6 +842,18 @@ extension DailyQuerySortThenBy on QueryBuilder<Daily, Daily, QSortThenBy> {
   QueryBuilder<Daily, Daily, QAfterSortBy> thenByEndDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'endDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
     });
   }
 
@@ -824,6 +908,12 @@ extension DailyQueryWhereDistinct on QueryBuilder<Daily, Daily, QDistinct> {
     });
   }
 
+  QueryBuilder<Daily, Daily, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
   QueryBuilder<Daily, Daily, QDistinct> distinctByStartDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'startDate');
@@ -854,6 +944,12 @@ extension DailyQueryProperty on QueryBuilder<Daily, Daily, QQueryProperty> {
   QueryBuilder<Daily, DateTime?, QQueryOperations> endDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endDate');
+    });
+  }
+
+  QueryBuilder<Daily, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 
