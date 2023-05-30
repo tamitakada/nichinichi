@@ -3,8 +3,8 @@ import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_manager.dart';
 import '../../widgets/item_view.dart';
 import 'base_component.dart';
-import 'edit_todo_subcomponent.dart';
-import 'todo_subcomponent.dart';
+import 'subcomponents/edit_todo_subcomponent.dart';
+import 'subcomponents/todo_subcomponent.dart';
 
 class TodoComponent extends StatefulWidget {
 

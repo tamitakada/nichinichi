@@ -8,7 +8,7 @@ class DailyEditView extends StatelessWidget {
   final Animation<double> animation;
   final void Function() onDismissed;
 
-  DailyEditView({ super.key, required this.item, required this.animation, required this.onDismissed });
+  const DailyEditView({ super.key, required this.item, required this.animation, required this.onDismissed });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class DailyEditView extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
+          padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: 2),

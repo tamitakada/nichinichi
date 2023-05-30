@@ -22,10 +22,10 @@ const ItemSchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'notes': PropertySchema(
+    r'order': PropertySchema(
       id: 1,
-      name: r'notes',
-      type: IsarType.string,
+      name: r'order',
+      type: IsarType.long,
     )
   },
   estimateSize: _itemEstimateSize,
@@ -61,12 +61,6 @@ int _itemEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.notes;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   return bytesCount;
 }
 
@@ -77,7 +71,7 @@ void _itemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.description);
-  writer.writeString(offsets[1], object.notes);
+  writer.writeLong(offsets[1], object.order);
 }
 
 Item _itemDeserialize(
@@ -88,7 +82,7 @@ Item _itemDeserialize(
 ) {
   final object = Item(
     description: reader.readStringOrNull(offsets[0]),
-    notes: reader.readStringOrNull(offsets[1]),
+    order: reader.readLongOrNull(offsets[1]),
   );
   object.id = id;
   return object;
@@ -104,7 +98,7 @@ P _itemDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -397,146 +391,70 @@ extension ItemQueryFilter on QueryBuilder<Item, Item, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesIsNull() {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'notes',
+        property: r'order',
       ));
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesIsNotNull() {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'notes',
+        property: r'order',
       ));
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'notes',
+        property: r'order',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesGreaterThan(
-    String? value, {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderGreaterThan(
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'notes',
+        property: r'order',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesLessThan(
-    String? value, {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderLessThan(
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'notes',
+        property: r'order',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<Item, Item, QAfterFilterCondition> orderBetween(
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'notes',
+        property: r'order',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'notes',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'notes',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesContains(String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'notes',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesMatches(String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'notes',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'notes',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Item, Item, QAfterFilterCondition> notesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'notes',
-        value: '',
       ));
     });
   }
@@ -571,15 +489,15 @@ extension ItemQuerySortBy on QueryBuilder<Item, Item, QSortBy> {
     });
   }
 
-  QueryBuilder<Item, Item, QAfterSortBy> sortByNotes() {
+  QueryBuilder<Item, Item, QAfterSortBy> sortByOrder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'notes', Sort.asc);
+      return query.addSortBy(r'order', Sort.asc);
     });
   }
 
-  QueryBuilder<Item, Item, QAfterSortBy> sortByNotesDesc() {
+  QueryBuilder<Item, Item, QAfterSortBy> sortByOrderDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'notes', Sort.desc);
+      return query.addSortBy(r'order', Sort.desc);
     });
   }
 }
@@ -609,15 +527,15 @@ extension ItemQuerySortThenBy on QueryBuilder<Item, Item, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Item, Item, QAfterSortBy> thenByNotes() {
+  QueryBuilder<Item, Item, QAfterSortBy> thenByOrder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'notes', Sort.asc);
+      return query.addSortBy(r'order', Sort.asc);
     });
   }
 
-  QueryBuilder<Item, Item, QAfterSortBy> thenByNotesDesc() {
+  QueryBuilder<Item, Item, QAfterSortBy> thenByOrderDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'notes', Sort.desc);
+      return query.addSortBy(r'order', Sort.desc);
     });
   }
 }
@@ -630,10 +548,9 @@ extension ItemQueryWhereDistinct on QueryBuilder<Item, Item, QDistinct> {
     });
   }
 
-  QueryBuilder<Item, Item, QDistinct> distinctByNotes(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Item, Item, QDistinct> distinctByOrder() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'order');
     });
   }
 }
@@ -651,9 +568,9 @@ extension ItemQueryProperty on QueryBuilder<Item, Item, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Item, String?, QQueryOperations> notesProperty() {
+  QueryBuilder<Item, int?, QQueryOperations> orderProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'notes');
+      return query.addPropertyName(r'order');
     });
   }
 }

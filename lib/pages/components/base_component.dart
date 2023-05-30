@@ -17,10 +17,7 @@ class BaseComponent extends StatelessWidget {
             painter: HalfBorder(),
           );
         }),
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 20, 20, 0),
-          child: child,
-        )
+        child,
       ]
     );
   }

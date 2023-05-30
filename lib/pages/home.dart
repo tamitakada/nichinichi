@@ -22,14 +22,8 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               setState(() { _pageNumber = 1; });
             },
-            icon: Icon(Icons.add, color: Colors.white,)
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() { _pageNumber = 2; });
-            },
             icon: Icon(Icons.settings, color: Colors.white,)
-          )
+          ),
         ],
         centerTitle: false,
         title: Text("NICHINICHI", style: Theme.of(context).textTheme.headlineLarge,),
@@ -48,14 +42,10 @@ class _HomePageState extends State<HomePage> {
               child: TodoComponent(),
             ),
             SizedBox(width: 20,),
-            Expanded(flex: 2, child: DailyCalendarComponent(),),
+            Expanded(flex: 2, child: DailyCalendarComponent(updateTodoList: () { setState(() {}); },),),
           ],
         )
-        : _pageNumber == 1 ?
-          AddDailyComponent(close: () { setState(() {
-            _pageNumber = 0;
-          }); })
-            : ThemeComponent(close: () { setState(() {
+        : ThemeComponent(close: () { setState(() {
               _pageNumber = 0;
             }); })
       )

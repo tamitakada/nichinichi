@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/models/item.dart';
+import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/models/models.dart';
 
-class SingleEditView extends StatelessWidget {
+class ItemEditView extends StatelessWidget {
 
   final Item item;
+  final Daily? daily;
   final Animation<double> animation;
   final void Function(String) onChanged;
   final void Function() onDismissed;
 
-  SingleEditView({ super.key, required this.item, required this.animation, required this.onChanged, required this.onDismissed });
+  ItemEditView({ super.key, required this.item, required this.animation, required this.onChanged, required this.onDismissed, this.daily });
 
   late final TextEditingController _controller = TextEditingController(text: item.description);
 
@@ -35,7 +37,7 @@ class SingleEditView extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
+          padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: 2),
@@ -49,7 +51,7 @@ class SingleEditView extends StatelessWidget {
                   width: 15, height: 15,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: Colors.white30,
+                    color: daily != null ? ColorConverter.parse(daily!.color) : Colors.white30,
                   ),
                 ),
                 const SizedBox(width: 10),

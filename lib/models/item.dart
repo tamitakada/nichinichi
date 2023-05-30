@@ -9,10 +9,10 @@ class Item {
   Id id = Isar.autoIncrement;
 
   String? description;
-  String? notes;
+  int? order;
 
   final daily = IsarLink<Daily>();
 
-  Item({ this.description, this.notes });
+  Item({ this.description, this.order });
 
 }

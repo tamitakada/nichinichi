@@ -12,7 +12,7 @@ class IncompleteItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.white, width: 2),

@@ -19,7 +19,7 @@ class CompleteItemView extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: item.daily.value != null ? ColorConverter.parse(item.daily.value?.color ?? "33CCD6").withAlpha(30) : Colors.white24,
         ),
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: const EdgeInsets.fromLTRB(0, 5, 20, 5),
         padding: const EdgeInsets.all(8),
         child: Text(
             item.description ?? "",

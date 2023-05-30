@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_manager.dart';
-import 'widgets/todo_widgets/static_widgets.dart';
+import '../widgets/todo_widgets/static_widgets.dart';
 
 class TodoSubcomponent extends StatefulWidget {
 
@@ -19,21 +19,23 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: widget.openEdit,
-                  icon: const Icon(Icons.edit, color: Colors.white, size: 14,)
-                )
-              ]
-            )
-          ],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: widget.openEdit,
+                    icon: const Icon(Icons.edit, color: Colors.white, size: 14,)
+                  )
+                ]
+              )
+            ],
+          ),
         ),
-        const SizedBox(height: 20),
         Expanded(
           child: ListView.builder(
             itemCount: widget.list.incompleteDailies.length + widget.list.completeDailies.length + widget.list.incompleteSingles.length + widget.list.completeSingles.length + 3,
@@ -41,7 +43,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               if (index == 0) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Text("DAILIES", style: Theme.of(context).textTheme.headlineSmall,),
+                  child: Text("DAILY", style: Theme.of(context).textTheme.headlineSmall,),
                 );
               } else if (index <= widget.list.incompleteDailies.length) {
                 return IncompleteItemView(
@@ -55,7 +57,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               } else if (index == widget.list.incompleteDailies.length + 1) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Text("SINGLES", style: Theme.of(context).textTheme.headlineSmall)
+                  child: Text("FOR TODAY", style: Theme.of(context).textTheme.headlineSmall)
                 );
               } else if (index < widget.list.incompleteDailies.length + widget.list.incompleteSingles.length + 2) {
                 return IncompleteItemView(
