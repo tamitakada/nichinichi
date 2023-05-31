@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_manager.dart';
 import '../widgets/todo_widgets/edit_widgets.dart';
+import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
 
 class EditTodoSubcomponent extends StatefulWidget {
 
@@ -19,7 +20,6 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   List<Item> _dailyItems = [];
   List<Item> _singleItems = [];
-  List<Item> _newSingleItems = [];
 
   @override
   void initState() {
@@ -29,47 +29,28 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
   }
 
   Future<void> _saveData() async {
-    try {
-      widget.list.incompleteDailies.retainAll(_dailyItems);
-      widget.list.incompleteSingles.retainAll(_singleItems);
-      int upsertCount = 0;
-      for (int i = 0; i < _newSingleItems.length; i++) {
-        if (_newSingleItems[i].description?.isNotEmpty ?? false) {
-          Item upsertItem = Item(
-            description: _newSingleItems[i].description,
-            order: upsertCount + widget.list.incompleteSingles.length
-          );
-          await DataManager.upsertItem(upsertItem);
-          widget.list.incompleteSingles.add(upsertItem);
-          upsertCount++;
-        }
-      }
-      if (!await DataManager.upsertList(widget.list)) {
-       print("error saving data");
-      }
-    } catch (e) {
-      print(e);
-    }
+    print(await DataManager.setDailies(widget.list, _dailyItems));
+    print(await DataManager.setSingles(widget.list, _singleItems));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return AnimatedList(
+      key: _listKey,
+      initialItemCount: _dailyItems.length + _singleItems.length + 3,
+      itemBuilder: (BuildContext context, int index, Animation<double> animation) {
+        if (index == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
-              Row(
-                children: [
+              ComponentHeaderView(
+                title: "TODAY'S TODOS",
+                actions: [
                   IconButton(
                     onPressed: () {
-                      _newSingleItems.add(Item(description: ""));
+                      _singleItems.add(Item(description: ""));
                       _listKey.currentState!.insertItem(
-                        _dailyItems.length + _singleItems.length + _newSingleItems.length + 1,
-                        duration: Duration(milliseconds: 300)
+                        _dailyItems.length + _singleItems.length + 1,
                       );
                     },
                     icon: const Icon(Icons.add, color: Colors.white, size: 14,)
@@ -78,63 +59,42 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
                     onPressed: () { _saveData().then((_) => widget.close()); },
                     icon: const Icon(Icons.done_rounded, color: Colors.white, size: 14,)
                   )
-                ]
-              )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Text("DAILY", style: Theme.of(context).textTheme.headlineSmall),
+              ),
             ],
-          ),
-        ),
-        Expanded(
-          child: AnimatedList(
-            key: _listKey,
-            initialItemCount: _dailyItems.length + _singleItems.length + _newSingleItems.length + 2,
-            itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-              if (index == 0) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Text("DAILY", style: Theme.of(context).textTheme.headlineSmall),
-                );
-              } else if (index <= _dailyItems.length) {
-                return DailyEditView(
-                  item: _dailyItems[index - 1],
-                  animation: animation,
-                  onDismissed: () {
-                    _dailyItems.removeAt(index - 1);
-                    _listKey.currentState!.removeItem(index, (context, animation) => Container());
-                  }
-                );
-              } else if (index == _dailyItems.length + 1) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Text("FOR TODAY", style: Theme.of(context).textTheme.headlineSmall,),
-                );
-              } else {
-                return ItemEditView(
-                  item: (index - _dailyItems.length - 2 >= _singleItems.length)
-                    ? _newSingleItems[index - _dailyItems.length - _singleItems.length - 2]
-                    : _singleItems[index - _dailyItems.length - 2],
-                  animation: animation,
-                  onChanged: (String updated) {
-                    if (index - _dailyItems.length - 2 >= _singleItems.length) {
-                      _newSingleItems[index - _dailyItems.length - _singleItems.length - 2].description = updated;
-                    } else {
-                      _singleItems[index - _dailyItems.length - 2].description = updated;
-                    }
-                  },
-                  onDismissed: () {
-                    if (index - _dailyItems.length - 2 >= _singleItems.length) {
-                      _newSingleItems.removeAt(index - _dailyItems.length - _singleItems.length - 2);
-                      _listKey.currentState!.removeItem(index, (context, animation) => Container());
-                    } else {
-                      _singleItems.removeAt(index - _dailyItems.length - 2);
-                      _listKey.currentState!.removeItem(index, (context, animation) => Container());
-                    }
-                  }
-                );
-              }
+          );
+        } else if (index <= _dailyItems.length) {
+          return DailyEditView(
+            item: _dailyItems[index - 1],
+            animation: animation,
+            onDismissed: () {
+              _dailyItems.removeAt(index - 1);
+              _listKey.currentState!.removeItem(index, (context, animation) => Container());
             }
-          ),
-        ),
-      ],
+          );
+        } else if (index == _dailyItems.length + 1) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Text("FOR TODAY", style: Theme.of(context).textTheme.headlineSmall,),
+          );
+        } else if (index <  _dailyItems.length + _singleItems.length + 2) {
+          return ItemEditView(
+            item: _singleItems[index - _dailyItems.length - 2],
+            animation: animation,
+            onChanged: (String updated) {
+              _singleItems[index - _dailyItems.length - 2].description = updated;
+            },
+            onDismissed: () {
+              _singleItems.removeAt(index - _dailyItems.length - 2);
+              _listKey.currentState!.removeItem(index, (context, animation) => Container());
+            }
+          );
+        } else { return const SizedBox(height: 20); }
+      }
     );
   }
 }

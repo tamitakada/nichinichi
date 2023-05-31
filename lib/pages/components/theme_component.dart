@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'base_component.dart';
+import 'widgets/base_widgets/base_component.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/widgets/stamp_setting_view.dart';
 

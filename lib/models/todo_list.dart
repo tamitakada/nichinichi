@@ -19,4 +19,10 @@ class TodoList {
 
   TodoList({ required this.date });
 
+  @override
+  bool operator ==(dynamic other) => other != null && other is TodoList && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
+
 }

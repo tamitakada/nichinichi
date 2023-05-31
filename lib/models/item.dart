@@ -15,4 +15,10 @@ class Item {
 
   Item({ this.description, this.order });
 
+  @override
+  bool operator ==(dynamic other) => other != null && other is Item && id == other.id;
+
+  @override
+  int get hashCode => super.hashCode;
+
 }

@@ -55,7 +55,7 @@ class Constants {
   static Color getLevelColor(CompletionLevel level) {
     switch (level) {
       case CompletionLevel.noData: return grey;
-      case CompletionLevel.none: return grey;
+      case CompletionLevel.none: return red;
       case CompletionLevel.low: return red;
       case CompletionLevel.medium: return yellow;
       case CompletionLevel.high: return green;

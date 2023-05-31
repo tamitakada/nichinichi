@@ -35,10 +35,16 @@ class DayView extends StatelessWidget {
           ),
         );
       case CompletionLevel.none:
-        return Center(
-          child: Icon(
-            Icons.close,
-            color: Constants.getLevelColor(level),
+        return Container(
+          decoration: BoxDecoration(
+            color: Constants.getLevelColor(level).withOpacity(0.3),
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Center(
+            child: Icon(
+              Icons.close,
+              color: Constants.getLevelColor(level),
+            ),
           ),
         );
       default:

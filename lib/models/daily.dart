@@ -25,4 +25,8 @@ class Daily {
   @override
   int get hashCode => super.hashCode;
 
+  bool shouldAddDaily(DateTime date) {
+    return startDate.isBefore(date) && (endDate?.isAfter(date) ?? true);
+  }
+
 }

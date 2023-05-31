@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/data_manager.dart';
 import 'package:nichinichi/widgets/calendar.dart';
 import 'package:nichinichi/models/models.dart';
+import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
 
 class DailyCalendarSubcomponent extends StatefulWidget {
 
@@ -52,26 +53,18 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
       constraints: const BoxConstraints(maxWidth: 600),
       child: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("DAILY CALENDAR", style: Theme.of(context).textTheme.headlineMedium),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {  widget.openEdit(null); },
-                      icon: const Icon(Icons.add, color: Colors.white, size: 16)
-                    ),
-                    IconButton(
-                      onPressed: () {  widget.openEdit(_currentDaily); },
-                      icon: const Icon(Icons.edit, color: Colors.white, size: 16)
-                    )
-                  ],
-                )
-              ],
-            ),
+          ComponentHeaderView(
+            title: "DAILY CALENDAR",
+            actions: [
+              IconButton(
+                onPressed: () {  widget.openEdit(null); },
+                icon: const Icon(Icons.add, color: Colors.white, size: 16)
+              ),
+              IconButton(
+                onPressed: () {  widget.openEdit(_currentDaily); },
+                icon: const Icon(Icons.edit, color: Colors.white, size: 16)
+              )
+            ],
           ),
           Row(
             children: [

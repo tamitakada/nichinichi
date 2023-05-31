@@ -1,7 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:nichinichi/models/models.dart';
-import 'utils/extensions.dart';
 
 class DataManager {
 
@@ -16,8 +15,6 @@ class DataManager {
     _isar ??= await Isar.open([ItemSchema, DailySchema, TodoListSchema], directory: await _localPath);
     return _isar!;
   }
-
-  static Future<Item?> getItem(Id id) async { return (await isar).items.get(id); }
 
   static Future<TodoList?> getTodaysList() async {
     try {
@@ -83,66 +80,101 @@ class DataManager {
     } catch (e) { return null; }
   }
 
-  static Future<bool> upsertDaily(Daily daily, bool addToToday, [List<Item>? itemsToAdd]) async {
+  static Future<bool> upsertItems(List<Item> items) async {
     try {
       await (await isar).writeTxn(() async {
-        daily.id = await (await isar).dailys.put(daily);
+        await (await isar).items.putAll(items);
       });
-      if (itemsToAdd != null) {
-        for (int i = 0; i < itemsToAdd.length; i++) {
-          daily.items.add(itemsToAdd[i]);
-        }
-        await (await isar).writeTxn(() async {
-          await daily.items.save();
-        });
-      }
-      if (addToToday) {
-        DateTime now = DateTime.now();
-        if (daily.startDate.isBefore(now) && (daily.endDate?.isAfter(now) ?? true)) {
-          TodoList? list = await getTodaysList();
-          if (list != null) {
-            list.incompleteDailies.addAll(daily.items);
-            return await upsertList(list);
-          } else { return false; }
-        }
-      }
-      return true;
-    } catch (e) {print(e); return false; }
-  }
-
-  static Future<bool> upsertItems(List<Item> items) async {
-    for (int i = 0; i < items.length; i++) {
-      try {
-        await (await isar).writeTxn(() async {
-          await (await isar).items.put(items[i]);
-        });
-      } catch (e) { print(e); return false; }
-    }
+    } catch (e) { print(e); return false; }
     return true;
   }
 
-  static Future<bool> upsertItem(Item item) async {
-    try {
-      (await isar).writeTxn(() async {
-        item.id = await (await isar).items.put(item);
-      });
-      return true;
-    } catch (e) { print(e); return false; }
-  }
-
-  static Future<bool> setItemsInDaily(Daily daily, List<Item> toUpdate, List<Item> toAdd) async {
+  static Future<bool> setDailyItems(Daily daily, List<Item> items) async {
     TodoList? list = await getTodaysList();
-    for (int i = daily.items.length - 1; i >= 0; i--) {
+
+    int counter = 0;
+    List<Item> toAdd = [];
+    while (counter < items.length) {
+      if (items[counter].description?.isNotEmpty ?? false) {
+        items[counter].order = counter;
+        if (!daily.items.contains(items[counter])) {
+          toAdd.add(items[counter]);
+          if (list != null && daily.shouldAddDaily(list.date)) {
+            list.incompleteDailies.add(items[counter]);
+          }
+        }
+        counter++;
+      } else { items.removeAt(counter); }
+    }
+
+    List<Item> toDelete = [];
+    for (int i = 0; i < daily.items.length; i++) {
       Item item = daily.items.elementAt(i);
-      if (!toUpdate.contains(item)) {
+      if (!items.contains(item)) {
+        List<TodoList>? lists = await getListsWithDailyItem(item);
+        if (lists == null || lists.isEmpty || (lists.length == 1 && lists[0] == list)) {
+          toDelete.add(item);
+        }
         daily.items.remove(item);
         list?.incompleteDailies.remove(item);
         list?.completeDailies.remove(item);
-        List<TodoList> lists = await getListsWithDailyItem(item) ?? [];
-        if (lists.isEmpty || (lists.length == 1 && lists[0].id == list?.id)) { await deleteItem(item); }
-      } else { await upsertItem(item); }
+      }
     }
-    return await upsertDaily(daily, true, toAdd) && (list != null ? await upsertList(list) : true);
+
+    if (await upsertItems(items) && await deleteItems(toDelete)) {
+      try {
+        daily.items.addAll(toAdd);
+        (await isar).writeTxn(() async {
+          await daily.items.save();
+          await list?.completeDailies.save();
+          await list?.incompleteDailies.save();
+        });
+        return true;
+      } catch (e) { print(e); return false; }
+    }
+    return false;
+  }
+
+  static Future<bool> setDailies(TodoList list, List<Item> items) async {
+    for (int i = list.incompleteDailies.length - 1; i >= 0; i--) {
+      Item item = list.incompleteDailies.elementAt(i);
+      if (!items.contains(item)) {
+        list.incompleteDailies.remove(item);
+      }
+    }
+    return await upsertList(list);
+  }
+
+  static Future<bool> setSingles(TodoList list, List<Item> items) async {
+    int counter = 0;
+    List<Item> toAdd = [];
+    while (counter < items.length) {
+      if (items[counter].description?.isNotEmpty ?? false) {
+        items[counter].order = counter;
+        if (!list.incompleteSingles.contains(items[counter])) {
+          toAdd.add(items[counter]);
+        }
+        counter++;
+      } else { items.removeAt(counter); }
+    }
+    List<Item> toDelete = [];
+    for (int i = list.incompleteSingles.length - 1; i >= 0; i--) {
+      Item item = list.incompleteSingles.elementAt(i);
+      if (!items.contains(item)) {
+        toDelete.add(item);
+        list.incompleteSingles.remove(item);
+      }
+    }
+    if (await upsertItems(items) && await deleteItems(toDelete)) {
+      try {
+        list.incompleteSingles.addAll(toAdd);
+        (await isar).writeTxn(() async {
+          await list.incompleteSingles.save();
+        });
+        return true;
+      } catch (e) { print(e); return false; }
+    }
+    return false;
   }
 
   static Future<bool> upsertList(TodoList list) async {
@@ -153,6 +185,15 @@ class DataManager {
         await list.incompleteSingles.save();
         await list.completeDailies.save();
         await list.completeSingles.save();
+      });
+      return true;
+    } catch (e) { print(e); return false; }
+  }
+
+  static Future<bool> deleteItems(List<Item> item) async {
+    try {
+      (await isar).writeTxn(() async {
+        (await isar).items.deleteAll(item.map((e) => e.id).toList());
       });
       return true;
     } catch (e) { print(e); return false; }
@@ -190,21 +231,6 @@ class DataManager {
         (await isar).todoLists.delete(list.id);
       });
       return true;
-    } catch (e) { print(e); return false; }
-  }
-
-  static Future<bool> deleteItemFromList(Item item, TodoList list) async {
-    try {
-      if (item.daily.value != null) {
-        list.incompleteDailies.remove(item);
-        return await upsertList(list);
-      } else {
-        list.incompleteSingles.remove(item);
-        (await isar).writeTxn(() async {
-          (await isar).items.delete(item.id);
-        });
-        return true;
-      }
     } catch (e) { print(e); return false; }
   }
 }

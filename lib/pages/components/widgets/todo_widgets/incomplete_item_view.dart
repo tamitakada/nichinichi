@@ -17,7 +17,7 @@ class IncompleteItemView extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Constants.grey,
-          borderRadius: BorderRadius.circular(6)
+          borderRadius: BorderRadius.circular(8)
         ),
         padding: const EdgeInsets.all(10),
         child: Row(

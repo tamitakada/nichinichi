@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
-import 'base_component.dart';
+import 'widgets/base_widgets/base_component.dart';
 import 'subcomponents/daily_calendar_subcomponent.dart';
 import 'subcomponents/edit_daily_subcomponent.dart';
 
