@@ -38,11 +38,16 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              flex: 1,
               child: TodoComponent(),
             ),
             SizedBox(width: 20,),
-            Expanded(flex: 2, child: DailyCalendarComponent(updateTodoList: () { setState(() {}); },),),
+            Flexible(
+              flex: 2,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: DailyComponent(updateTodoList: () { setState(() {}); },)
+              ),
+            ),
           ],
         )
         : ThemeComponent(close: () { setState(() {

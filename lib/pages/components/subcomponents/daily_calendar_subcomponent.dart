@@ -26,12 +26,7 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
   List<DropdownMenuItem<int>> buildMonthItems() {
     List<DropdownMenuItem<int>> items = [];
     for (int i = 0; i < _allMonths.length; i++) {
-      items.add(
-          DropdownMenuItem(
-            value: i + 1,
-            child: Text(_allMonths[i]),
-          )
-      );
+      items.add(DropdownMenuItem(value: i + 1, child: Text(_allMonths[i])));
     }
     return items;
   }
@@ -40,12 +35,7 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
     List<DropdownMenuItem<int>> items = [];
     int currentYear = DateTime.now().year;
     for (int i = 2023; i <= currentYear; i++) {
-      items.add(
-          DropdownMenuItem(
-            value: i,
-            child: Text("$i"),
-          )
-      );
+      items.add(DropdownMenuItem(value: i, child: Text("$i")));
     }
     return items;
   }
@@ -145,23 +135,28 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
               ),
             ],
           ),
-          (_currentDaily != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 10, 20),
+            child: (_currentDaily != null)
               ? FutureBuilder<Map<int, TodoList>?>(
-              future: DataManager.getListsForDaily(_currentYear, _currentMonth, _currentDaily!),
-              builder: (BuildContext context, AsyncSnapshot<Map<int, TodoList>?> snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data != null) {
-                    return CalendarView(date: DateTime(_currentYear, _currentMonth), completionData: snapshot.data!, daily: _currentDaily!,);
+                future: DataManager.getListsForDaily(_currentYear, _currentMonth, _currentDaily!),
+                builder: (BuildContext context, AsyncSnapshot<Map<int, TodoList>?> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data != null) {
+                      return CalendarView(
+                        date: DateTime(_currentYear, _currentMonth),
+                        completionData: snapshot.data!,
+                        daily: _currentDaily!,
+                      );
+                    } else {
+                      return Text("error!!!");
+                    }
                   } else {
-                    return Text("error!!!");
+                    return Text("loading...");
                   }
-                } else {
-                  return Text("loading...");
                 }
-              }
-          )
-              : Container(),
-          const SizedBox(height: 20),
+              ) : Container(),
+          ),
         ],
       ),
     );

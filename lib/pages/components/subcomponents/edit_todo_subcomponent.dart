@@ -56,31 +56,33 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    _newSingleItems.add(Item(description: ""));
-                    _listKey.currentState!.insertItem(
-                      _dailyItems.length + _singleItems.length + _newSingleItems.length + 1,
-                      duration: Duration(milliseconds: 300)
-                    );
-                  },
-                  icon: const Icon(Icons.add, color: Colors.white, size: 14,)
-                ),
-                IconButton(
-                  onPressed: () { _saveData().then((_) => widget.close()); },
-                  icon: const Icon(Icons.done_rounded, color: Colors.white, size: 14,)
-                )
-              ]
-            )
-          ],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("TODAY'S TODOS", style: Theme.of(context).textTheme.headlineMedium),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      _newSingleItems.add(Item(description: ""));
+                      _listKey.currentState!.insertItem(
+                        _dailyItems.length + _singleItems.length + _newSingleItems.length + 1,
+                        duration: Duration(milliseconds: 300)
+                      );
+                    },
+                    icon: const Icon(Icons.add, color: Colors.white, size: 14,)
+                  ),
+                  IconButton(
+                    onPressed: () { _saveData().then((_) => widget.close()); },
+                    icon: const Icon(Icons.done_rounded, color: Colors.white, size: 14,)
+                  )
+                ]
+              )
+            ],
+          ),
         ),
-        const SizedBox(height: 20),
         Expanded(
           child: AnimatedList(
             key: _listKey,

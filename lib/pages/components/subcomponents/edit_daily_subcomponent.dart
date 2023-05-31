@@ -45,11 +45,21 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
   }
 
   Future<void> _saveData() async {
+    int counter = 0;
+    while (counter < _initialItems.length) {
+      if (_initialItems[counter].description?.isNotEmpty ?? false) {
+        _initialItems[counter].order = counter;
+        counter++;
+      } else {
+        _initialItems.removeAt(counter);
+      }
+    }
     List<Item> items = [];
     int upsertCount = 0;
     for (int i = 0; i < _newItems.length; i++) {
       if (_newItems[i].description?.isNotEmpty ?? false) {
         items.add(Item(description: _newItems[i].description, order: upsertCount + _initialItems.length));
+        upsertCount++;
       }
     }
     if (await DataManager.upsertItems(items)) {
@@ -78,31 +88,33 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: widget.close,
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 14)
-                ),
-                Text("MANAGE DAILY", style: Theme.of(context).textTheme.headlineMedium)
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 20, 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: widget.close,
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16)
+                  ),
+                  Text("MANAGE DAILY", style: Theme.of(context).textTheme.headlineMedium)
+                ],
+              ),
             ),
             Row(
               children: [
                 widget.daily != null
                   ? IconButton(
                     onPressed: () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close()),
-                    icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 16)
+                    icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 18)
                   ) : Container(),
                 IconButton(
                   onPressed: () => _saveData().then((_) => widget.close()),
-                  icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 16)
+                  icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 18)
                 ),
               ],
             )
           ],
         ),
-        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
           child: TextField(

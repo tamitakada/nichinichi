@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:nichinichi/models/models.dart';
+import 'utils/extensions.dart';
 
 class DataManager {
 
@@ -26,6 +27,7 @@ class DataManager {
       else {
         List<Daily> dailies = await getActiveDailies() ?? [];
         TodoList toAdd = TodoList(date: DateTime(now.year, now.month, now.day));
+        await upsertList(toAdd); // Put before adding items
         for (var daily in dailies) {
           for (var item in daily.items) { toAdd.incompleteDailies.add(item); }
         }
@@ -137,7 +139,7 @@ class DataManager {
         list?.incompleteDailies.remove(item);
         list?.completeDailies.remove(item);
         List<TodoList> lists = await getListsWithDailyItem(item) ?? [];
-        if (lists.isEmpty) { await deleteItem(item); }
+        if (lists.isEmpty || (lists.length == 1 && lists[0].id == list?.id)) { await deleteItem(item); }
       } else { await upsertItem(item); }
     }
     return await upsertDaily(daily, true, toAdd) && (list != null ? await upsertList(list) : true);
@@ -205,9 +207,4 @@ class DataManager {
       }
     } catch (e) { print(e); return false; }
   }
-
-  static void sortItems(List<Item> items) {
-    items.sort((Item first, Item second) => first.order?.compareTo(second.order ?? -1) ?? 0);
-  }
-
 }

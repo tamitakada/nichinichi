@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/item.dart';
 import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/constants.dart';
 
 class IncompleteItemView extends StatelessWidget {
 
@@ -15,10 +16,10 @@ class IncompleteItemView extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, width: 2),
-            borderRadius: BorderRadius.circular(10)
+          color: Constants.grey,
+          borderRadius: BorderRadius.circular(6)
         ),
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         child: Row(
           children: [
             GestureDetector(

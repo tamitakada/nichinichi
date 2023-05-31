@@ -19,17 +19,29 @@ class ThemeComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseComponent(
-      child: Column(
-        children: [
-          Text("THEME", style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 20),
-          Text("COMPLETION STAMPS", style: Theme.of(context).textTheme.headlineSmall),
-          Column(
-            children: _sortedKeys.map(
-              (value) => StampSettingView(level: value)
-            ).toList(),
-          )
-        ],
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 20, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: close,
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
+                ),
+                Text("THEME", style: Theme.of(context).textTheme.headlineMedium),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text("COMPLETION STAMPS", style: Theme.of(context).textTheme.headlineSmall),
+            Row(
+              children: _sortedKeys.map(
+                (value) => StampSettingView(level: value)
+              ).toList(),
+            )
+          ],
+        ),
       )
     );
   }

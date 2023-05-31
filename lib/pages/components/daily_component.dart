@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/data_manager.dart';
-import '../../widgets/calendar.dart';
 import 'package:nichinichi/models/models.dart';
 import 'base_component.dart';
 import 'subcomponents/daily_calendar_subcomponent.dart';
 import 'subcomponents/edit_daily_subcomponent.dart';
 
-class DailyCalendarComponent extends StatefulWidget {
+class DailyComponent extends StatefulWidget {
 
   final void Function() updateTodoList;
 
-  const DailyCalendarComponent({ super.key, required this.updateTodoList });
+  const DailyComponent({ super.key, required this.updateTodoList });
 
   @override
-  State<DailyCalendarComponent> createState() => _DailyCalendarComponentState();
+  State<DailyComponent> createState() => _DailyComponentState();
 }
 
-class _DailyCalendarComponentState extends State<DailyCalendarComponent> {
+class _DailyComponentState extends State<DailyComponent> {
 
   int _dailyPage = 0;
   Daily? _currentDaily;

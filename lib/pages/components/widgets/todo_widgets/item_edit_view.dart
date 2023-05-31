@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/utils/extensions.dart';
 import 'package:nichinichi/models/models.dart';
+import 'package:nichinichi/constants.dart';
 
 class ItemEditView extends StatelessWidget {
 
@@ -40,8 +41,8 @@ class ItemEditView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 5, 20, 5),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2),
-              borderRadius: BorderRadius.circular(10)
+              color: Constants.grey,
+              borderRadius: BorderRadius.circular(6)
             ),
             padding: const EdgeInsets.all(8),
             child: Row(

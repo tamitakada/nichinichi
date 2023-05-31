@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
+import 'package:nichinichi/painters/stamp.dart';
 import 'dart:math';
 import 'stamp_view.dart';
+import 'package:nichinichi/utils/stamp_manager.dart';
 
 class DayView extends StatelessWidget {
 
   final int day;
-  final CompletionLevel completionLevel;
+  final CompletionLevel level;
 
-  const DayView({ super.key, required this.day, required this.completionLevel });
+  const DayView({ super.key, required this.day, required this.level });
 
-  Widget buildStamp() {
-    switch (completionLevel) {
+  Widget _buildStamp() {
+    switch (level) {
       case CompletionLevel.noData:
-        return Center(
-          child: Transform.rotate(
-            angle: pi / 5,
-            child: Container(
-              height: 40,
-              width: 2,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(2)
+        return Container(
+          decoration: BoxDecoration(
+            color: Constants.getLevelColor(level),
+            borderRadius: BorderRadius.circular(10)
+          ),
+          child: Center(
+            child: Transform.rotate(
+              angle: pi / 6,
+              child: Container(
+                height: 40,
+                width: 2,
+                decoration: BoxDecoration(
+                  color: Colors.white12,
+                  borderRadius: BorderRadius.circular(2)
+                ),
               ),
             ),
           ),
         );
       case CompletionLevel.none:
-        return Container();
+        return Center(
+          child: Icon(
+            Icons.close,
+            color: Constants.getLevelColor(level),
+          ),
+        );
       default:
-        return Padding(padding: const EdgeInsets.all(5), child: StampView(level: completionLevel),);
+        return StampView(level: level);
     }
   }
 
@@ -38,22 +51,12 @@ class DayView extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 0.75,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("$day"),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white30
-                ),
-                padding: const EdgeInsets.all(10),
-                child: buildStamp(),
-              ),
-            )
+            Expanded(child: _buildStamp())
           ],
         ),
       ),

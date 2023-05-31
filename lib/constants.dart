@@ -12,6 +12,7 @@ enum CompletionLevel {
 class Constants {
   
   static const bgColor = Color.fromRGBO(45, 45, 45, 1);
+  static const grey = Color.fromRGBO(60, 60, 60, 1);
   static const blue = Color.fromRGBO(94, 220, 228, 1);
   static const green = Color.fromRGBO(139, 223, 56, 1);
   static const yellow = Color.fromRGBO(228, 220, 16, 1);
@@ -53,17 +54,13 @@ class Constants {
 
   static Color getLevelColor(CompletionLevel level) {
     switch (level) {
-      case CompletionLevel.noData: return Colors.white;
-      case CompletionLevel.none: return Colors.white;
+      case CompletionLevel.noData: return grey;
+      case CompletionLevel.none: return grey;
       case CompletionLevel.low: return red;
       case CompletionLevel.medium: return yellow;
       case CompletionLevel.high: return green;
       case CompletionLevel.perfect: return blue;
     }
-  }
-
-  static String getStampImage(CompletionLevel level) {
-    return "";
   }
   
 }

@@ -25,7 +25,4 @@ class Daily {
   @override
   int get hashCode => super.hashCode;
 
-  @override
-  String toString() => "Daily<\nId: $id\nTitle: $title\nStart: $startDate\nEnd: $endDate\nColor: $color>";
-
 }

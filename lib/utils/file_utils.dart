@@ -1,5 +1,6 @@
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 class FileUtils {
 
@@ -28,9 +29,24 @@ class FileUtils {
       final contents = await file.readAsString();
       return contents;
     } catch (e) {
-      print("ERROR!"); // TODO: Error handling
+      print("err"); // TODO: Error handling
       return "";
     }
+  }
+
+  static Future<Image?> readImageFile(String fileName) async {
+    try {
+      final file = await localFile(fileName);
+      if (await file.exists()) { return Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity); }
+      return null;
+    } catch (e) { return null; }
+  }
+
+  static Future<File?> copyFile(File source, String fileName) async {
+    try {
+      final File target = await localFile(fileName);
+      return await source.copy(target.path);
+    } catch (e) { return null; }
   }
 
 }
