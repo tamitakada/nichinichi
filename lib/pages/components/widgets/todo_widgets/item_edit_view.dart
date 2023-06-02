@@ -10,8 +10,9 @@ class ItemEditView extends StatelessWidget {
   final Animation<double> animation;
   final void Function(String) onChanged;
   final void Function() onDismissed;
+  final Color? color;
 
-  ItemEditView({ super.key, required this.item, required this.animation, required this.onChanged, required this.onDismissed, this.daily });
+  ItemEditView({ super.key, required this.item, required this.animation, required this.onChanged, required this.onDismissed, this.daily, this.color });
 
   late final TextEditingController _controller = TextEditingController(text: item.description);
 
@@ -46,13 +47,13 @@ class ItemEditView extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: 15, height: 15,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: daily != null ? ColorConverter.parse(daily!.color) : Colors.white30,
+                    color: color ??
+                      (daily != null ? ColorConverter.parse(daily!.color) : Colors.white30),
                   ),
                 ),
                 const SizedBox(width: 10),

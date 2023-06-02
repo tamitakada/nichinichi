@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+
+import 'package:nichinichi/constants.dart';
+import 'package:nichinichi/abstract_classes/error_management.dart';
+
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
+
 import 'base_component.dart';
-import 'subcomponents/daily_calendar_subcomponent.dart';
-import 'subcomponents/edit_daily_subcomponent.dart';
+import 'subcomponents/daily_subcomponents/daily_subcomponents.dart';
+
 import 'package:nichinichi/global_widgets/logo_spinner.dart';
-import 'theme_component.dart';
-import 'package:nichinichi/overlay_manager.dart';
+
 
 class DailyComponent extends StatefulWidget {
 
@@ -19,7 +23,7 @@ class DailyComponent extends StatefulWidget {
   State<DailyComponent> createState() => _DailyComponentState();
 }
 
-class _DailyComponentState extends State<DailyComponent> {
+class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
 
   Daily? _currentDaily;
 
@@ -47,7 +51,8 @@ class _DailyComponentState extends State<DailyComponent> {
                         }
                       );
                     } else {
-                      return Text("ERROR Loading data");
+                      showError(widget.manager, ErrorType.fetch);
+                      return Container();
                     }
                   } else { return const Center(child: LogoSpinner()); }
                 },
@@ -55,11 +60,11 @@ class _DailyComponentState extends State<DailyComponent> {
             break;
           case 'daily/edit':
             builder = (BuildContext context) => EditDailySubcomponent(
-              daily: _currentDaily, close: () { widget.updateTodoList(); Navigator.of(context).pop(); }
+              daily: _currentDaily, manager: widget.manager, close: () { widget.updateTodoList(); Navigator.of(context).pop(); }
             );
             break;
           case 'daily/theme':
-            builder = (BuildContext context) => ThemeComponent();
+            builder = (BuildContext context) => ThemeSubcomponent(manager: widget.manager);
             break;
           default:
             throw Exception('Invalid route: ${settings.name}');

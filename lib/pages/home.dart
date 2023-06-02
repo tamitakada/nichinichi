@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:nichinichi/constants.dart';
+import 'package:nichinichi/utils/pair.dart';
+
+import 'package:nichinichi/abstract_classes/error_management.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
-import 'components/components.dart';
+
 import 'package:nichinichi/global_widgets/logo_spinner.dart';
-import 'package:nichinichi/overlay_manager.dart';
+
+import 'components/components.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,18 +19,25 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements OverlayManager {
+class _HomePageState extends State<HomePage> with ErrorMixin implements OverlayManager {
 
   Future<TodoList?> _list = DataManager.getTodaysList();
-  ValueNotifier<Widget?> _overlayChild = ValueNotifier<Widget?>(null);
+  final ValueNotifier<Pair<Widget?, Color?>?> _overlayChild = ValueNotifier(null);
 
   void updateList() { setState(() { _list = DataManager.getTodaysList(); }); }
 
-  @override
-  void updateOverlay(Widget? child) { _overlayChild.value = child; }
+  // Overlay methods
 
   @override
-  bool isOverlayOpen() { return _overlayChild.value != null; }
+  void closeOverlay() => _overlayChild.value = null;
+
+  @override
+  void updateOverlay(Widget? child, [Color? color]) {
+    if (mounted) { _overlayChild.value = Pair(child, color); }
+  }
+
+  @override
+  bool isOverlayOpen() => _overlayChild.value != null;
 
   @override
   Widget build(BuildContext context) {
@@ -61,24 +74,27 @@ class _HomePageState extends State<HomePage> implements OverlayManager {
                       ],
                     )
                   );
-                } else { return const Text("Error"); }
+                } else {
+                  showError(this, ErrorType.save);
+                  return Container();
+                }
               } else { return const Center(child: LogoSpinner()); }
             },
           )
         ),
-        ValueListenableBuilder<Widget?>(
+        ValueListenableBuilder<Pair<Widget?, Color?>?>(
           valueListenable: _overlayChild,
-          builder: (BuildContext context, Widget? overlayChild, _) {
-            return overlayChild != null ? GestureDetector(
-              onTap: () => _overlayChild.value = null,
+          builder: (BuildContext context, Pair<Widget?, Color?>? overlayChild, _) {
+            return overlayChild != null && overlayChild.a != null ? GestureDetector(
+              onTap: closeOverlay,
               child: Stack(
                 children: [
                   Container(
-                    height: double.infinity, 
                     width: double.infinity,
-                    color: Colors.transparent
+                    height: double.infinity,
+                    color: overlayChild.b ?? Colors.transparent,
                   ),
-                  overlayChild
+                  overlayChild.a!
                 ],
               ),
             ) : Container();

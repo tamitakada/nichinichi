@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/models/item.dart';
-import 'package:nichinichi/utils/extensions.dart';
+
 import 'package:nichinichi/constants.dart';
+import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/models/item.dart';
+
 
 class DailyEditView extends StatelessWidget {
 
@@ -9,7 +11,9 @@ class DailyEditView extends StatelessWidget {
   final Animation<double> animation;
   final void Function() onDismissed;
 
-  const DailyEditView({ super.key, required this.item, required this.animation, required this.onDismissed });
+  const DailyEditView({
+    super.key, required this.item, required this.animation, required this.onDismissed
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,6 @@ class DailyEditView extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: 15, height: 15,

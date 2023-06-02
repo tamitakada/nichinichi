@@ -7,19 +7,22 @@ import 'package:nichinichi/utils/extensions.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
+import 'package:nichinichi/abstract_classes/error_management.dart';
+
 
 class EditDailySubcomponent extends StatefulWidget {
 
   final Daily? daily;
+  final OverlayManager manager;
   final void Function() close;
 
-  const EditDailySubcomponent({ super.key, required this.close, this.daily });
+  const EditDailySubcomponent({ super.key, required this.manager, required this.close, this.daily });
 
   @override
   State<EditDailySubcomponent> createState() => _EditDailySubcomponentState();
 }
 
-class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
+class _EditDailySubcomponentState extends State<EditDailySubcomponent> with ErrorMixin {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
@@ -41,17 +44,30 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
     super.initState();
   }
 
-  Future<void> _saveData(bool archive) async {
-    widget.daily?.archived = archive;
+  Future<void> _archive() async {
+    if (widget.daily != null) {
+      if (!await DataManager.archiveDaily(widget.daily!)) {
+        showError(widget.manager, ErrorType.save);
+      }
+    }
+  }
+
+  Future<void> _unarchive() async {
+    if (widget.daily != null) {
+      if (!await DataManager.unarchiveDaily(widget.daily!)) {
+        showError(widget.manager, ErrorType.save);
+      }
+    }
+  }
+
+  Future<void> _saveData() async {
     widget.daily?.color = _currentColor.toHex();
     widget.daily?.title = _nameController.text;
     Daily daily = widget.daily
-      ?? Daily(
-        title: _nameController.text,
-        color: _currentColor.toHex()
-      );
-    if (await DataManager.upsertDaily(daily)) {
-      await DataManager.setDailyItems(daily, _items);
+      ?? Daily(title: _nameController.text, color: _currentColor.toHex());
+    if (!await DataManager.upsertDaily(daily) ||
+        !await DataManager.setDailyItems(daily, _items)) {
+      showError(widget.manager, ErrorType.save);
     }
   }
 
@@ -63,9 +79,24 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
           title: "MANAGE DAILY",
           leadingAction: IconButton(onPressed: widget.close, icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)),
           actions: [
+            widget.daily != null ? IconButton(
+                onPressed: () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close()),
+                icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 20)
+            ) : Container(),
+            widget.daily != null ? IconButton(
+                onPressed: () {
+                  if (widget.daily!.archived) { _unarchive().then((_) => widget.close()); }
+                  else { _archive().then((_) => widget.close()); }
+                },
+                icon: Icon(
+                  widget.daily!.archived ? Icons.unarchive_outlined : Icons.archive_outlined,
+                  color: widget.daily!.archived ? Constants.yellow : Constants.red,
+                  size: 20
+                )
+            ) : Container(),
             IconButton(
-              onPressed: () => _saveData(false).then((_) => widget.close()),
-              icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 18)
+              onPressed: () => _saveData().then((_) => widget.close()),
+              icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 20)
             ),
           ],
         ),
@@ -101,6 +132,7 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
                 },
                 child: CircleAvatar(backgroundColor: _currentColor, radius: 10),
               ),
+              const SizedBox(width: 20),
               Expanded(
                 child: TextField(
                   controller: _nameController,
@@ -111,19 +143,6 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
             ],
           ),
         ),
-        widget.daily != null ?
-          Row(
-            children: [
-              FramedButton(
-                text: "Archive",
-                onTap: () => _saveData(true)
-              ),
-              FramedButton(
-                text: "Delete",
-                onTap: () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close())
-              )
-            ],
-          ) : Container(),
         const SizedBox(height: 20),
         Row(
           children: [
@@ -151,7 +170,8 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> {
                 onDismissed: () {
                   _items.removeAt(index);
                   _listKey.currentState!.removeItem(index, (context, animation) => Container());
-                }
+                },
+                color: _currentColor,
               );
             },
           ),

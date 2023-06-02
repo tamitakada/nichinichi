@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 
 import 'base_component.dart';
-import 'subcomponents/edit_todo_subcomponent.dart';
-import 'subcomponents/todo_subcomponent.dart';
+import 'subcomponents/todo_subcomponents/todo_subcomponents.dart';
 
 
 class TodoComponent extends StatelessWidget {
@@ -23,7 +22,7 @@ class TodoComponent extends StatelessWidget {
         switch (settings.name) {
           case 'todo/home':
             builder = (BuildContext context) =>  TodoSubcomponent(list: list);
-              break;
+            break;
           case 'todo/edit':
             builder = (BuildContext context) => EditTodoSubcomponent(
               list: list, updateList: updateList

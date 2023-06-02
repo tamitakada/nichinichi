@@ -4,7 +4,7 @@ import 'package:nichinichi/pages/components/widgets/daily_widgets/calendar.dart'
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
 import 'package:nichinichi/global_widgets/dropdown_selector.dart';
-import 'package:nichinichi/overlay_manager.dart';
+import 'package:nichinichi/abstract_classes/overlay_manager.dart';
 
 class DailyCalendarSubcomponent extends StatefulWidget {
 
@@ -61,6 +61,10 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
               IconButton(
                 onPressed: () {  widget.openEdit(_currentDaily); },
                 icon: const Icon(Icons.edit, color: Colors.white, size: 16)
+              ),
+              IconButton(
+                onPressed: () => Navigator.of(context).pushNamed("daily/theme"),
+                icon: const Icon(Icons.format_paint, color: Colors.white, size: 16)
               )
             ],
           ),

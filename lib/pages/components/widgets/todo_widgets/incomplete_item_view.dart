@@ -8,7 +8,7 @@ class IncompleteItemView extends StatelessWidget {
   final Item item;
   final void Function() onTap;
 
-  IncompleteItemView({ super.key, required this.item, required this.onTap });
+  const IncompleteItemView({ super.key, required this.item, required this.onTap });
 
   @override
   Widget build(BuildContext context) {

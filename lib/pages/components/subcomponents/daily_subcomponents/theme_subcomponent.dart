@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/pages/components/widgets/theme_widgets/stamp_setting_view.dart';
+import 'package:nichinichi/abstract_classes/overlay_manager.dart';
 
-class ThemeComponent extends StatelessWidget {
+class ThemeSubcomponent extends StatelessWidget {
 
-  ThemeComponent({ super.key });
+  final OverlayManager manager;
+
+  ThemeSubcomponent({ super.key, required this.manager});
 
   final List<CompletionLevel> _sortedKeys = [
     CompletionLevel.perfect,
@@ -33,7 +36,7 @@ class ThemeComponent extends StatelessWidget {
           Text("COMPLETION STAMPS", style: Theme.of(context).textTheme.headlineSmall),
           Row(
             children: _sortedKeys.map(
-              (value) => StampSettingView(level: value)
+              (value) => Expanded(child: StampSettingView(manager: this.manager, level: value))
             ).toList(),
           )
         ],

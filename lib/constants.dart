@@ -9,6 +9,14 @@ enum CompletionLevel {
   perfect
 }
 
+enum ErrorType {
+  save,
+  fetch,
+  fileRead,
+  fileWrite,
+  other
+}
+
 class Constants {
   
   static const bgColor = Color.fromRGBO(45, 45, 45, 1);
@@ -17,6 +25,16 @@ class Constants {
   static const green = Color.fromRGBO(139, 223, 56, 1);
   static const yellow = Color.fromRGBO(228, 220, 16, 1);
   static const red = Color.fromRGBO(251, 74, 74, 1);
+
+  static String errorToString(ErrorType type) {
+    switch (type) {
+      case ErrorType.save: return "Unable to Save Data";
+      case ErrorType.fetch: return "Unable to Get Data";
+      case ErrorType.fileRead: return "Unable to Read Data";
+      case ErrorType.fileWrite: return "Unable to Write Data";
+      case ErrorType.other: return "Unable to Load Data";
+    }
+  }
 
   static String levelToString(CompletionLevel level) {
     switch (level) {

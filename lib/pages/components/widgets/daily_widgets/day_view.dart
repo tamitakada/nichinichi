@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:nichinichi/constants.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/global_widgets/stamp_view.dart';
+
 
 class DayView extends StatelessWidget {
 
@@ -39,10 +42,7 @@ class DayView extends StatelessWidget {
             borderRadius: BorderRadius.circular(10)
           ),
           child: Center(
-            child: Icon(
-              Icons.close,
-              color: Constants.getLevelColor(level),
-            ),
+            child: Icon(Icons.close, color: Constants.getLevelColor(level)),
           ),
         );
       default:
@@ -58,10 +58,7 @@ class DayView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("$day"),
-            Expanded(child: _buildStamp())
-          ],
+          children: [Text("$day"), Expanded(child: _buildStamp())],
         ),
       ),
     );

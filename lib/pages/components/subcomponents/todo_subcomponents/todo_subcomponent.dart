@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
-import '../widgets/todo_widgets/static_widgets.dart';
+import '../../widgets/todo_widgets/static_widgets.dart';
 import 'package:nichinichi/utils/extensions.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
 

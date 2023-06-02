@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
-import 'package:nichinichi/overlay_manager.dart';
+import 'package:nichinichi/abstract_classes/overlay_manager.dart';
 
 class DropdownSelector<T> extends StatefulWidget {
 
@@ -79,7 +79,7 @@ class _DropdownSelectorState<T> extends State<DropdownSelector<T>> with TickerPr
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  widget.manager.updateOverlay(null);
+                  widget.manager.closeOverlay();
                   setState(() { _currentIndex = index; });
                   widget.onChanged(widget.options[_currentIndex]);
                 },
@@ -110,7 +110,7 @@ class _DropdownSelectorState<T> extends State<DropdownSelector<T>> with TickerPr
     return GestureDetector(
       onTap: () {
         if (widget.manager.isOverlayOpen()) {
-          widget.manager.updateOverlay(null);
+          widget.manager.closeOverlay();
         } else {
           widget.manager.updateOverlay(_buildOverlayDropdown(context));
           _overlayController.reset();
@@ -120,7 +120,7 @@ class _DropdownSelectorState<T> extends State<DropdownSelector<T>> with TickerPr
       child: Container(
         clipBehavior: Clip.none,
         key: _dropdownKey,
-        constraints: BoxConstraints(maxHeight: 40),
+        constraints: const BoxConstraints(maxHeight: 40),
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white, width: 2),
@@ -133,10 +133,11 @@ class _DropdownSelectorState<T> extends State<DropdownSelector<T>> with TickerPr
           child: Row(
             children: [
               Expanded(
-                  child: Text(
-                    widget.optionNames[_currentIndex] ?? "",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  )
+                child: Text(
+                  widget.optionNames[_currentIndex] ?? "",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                )
               ),
               const Icon(
                 Icons.keyboard_arrow_down_rounded,

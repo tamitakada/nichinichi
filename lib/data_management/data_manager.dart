@@ -215,6 +215,38 @@ class DataManager {
     } catch (e) { print(e); return false; }
   }
 
+  static Future<bool> archiveDaily(Daily daily) async {
+    try {
+      daily.archived = true;
+      TodoList? list = await getTodaysList();
+      for (int i = daily.items.length - 1; i >= 0; i--) {
+        list?.incompleteDailies.remove(daily.items.elementAt(i));
+        list?.completeDailies.remove(daily.items.elementAt(i));
+      }
+      (await isar).writeTxn(() async {
+        await list?.incompleteDailies.save();
+        await list?.completeDailies.save();
+        (await isar).dailys.put(daily);
+      });
+      return true;
+    } catch (e) { print(e); return false; }
+  }
+
+  static Future<bool> unarchiveDaily(Daily daily) async {
+    try {
+      daily.archived = false;
+      TodoList? list = await getTodaysList();
+      for (int i = daily.items.length - 1; i >= 0; i--) {
+        list?.incompleteDailies.add(daily.items.elementAt(i));
+      }
+      (await isar).writeTxn(() async {
+        await list?.incompleteDailies.save();
+        (await isar).dailys.put(daily);
+      });
+      return true;
+    } catch (e) { print(e); return false; }
+  }
+
   static Future<bool> deleteDaily(Daily daily) async {
     try {
       DateTime now = DateTime.now();

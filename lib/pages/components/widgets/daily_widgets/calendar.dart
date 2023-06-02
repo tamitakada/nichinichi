@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:nichinichi/constants.dart';
-import 'day_view.dart';
-import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/utils/daily_stats_mixin.dart';
+
+import 'package:nichinichi/models/models.dart';
+
+import 'day_view.dart';
+
 
 class CalendarView extends StatelessWidget with DailyStats {
 
@@ -10,7 +14,9 @@ class CalendarView extends StatelessWidget with DailyStats {
   final Daily daily;
   final Map<int, TodoList> completionData;
 
-  const CalendarView({ super.key, required this.date, required this.daily, required this.completionData });
+  const CalendarView({
+    super.key, required this.date, required this.daily, required this.completionData
+  });
 
   List<Widget> buildWeek(int firstWeekday, int firstDay, int lastWeekday) {
     DateTime now = DateTime.now();
@@ -51,8 +57,6 @@ class CalendarView extends StatelessWidget with DailyStats {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: buildWeeks(),
-    );
+    return Column(children: buildWeeks());
   }
 }
