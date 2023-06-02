@@ -22,8 +22,13 @@ const ItemSchema = CollectionSchema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'order': PropertySchema(
+    r'hashCode': PropertySchema(
       id: 1,
+      name: r'hashCode',
+      type: IsarType.long,
+    ),
+    r'order': PropertySchema(
+      id: 2,
       name: r'order',
       type: IsarType.long,
     )
@@ -71,7 +76,8 @@ void _itemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.description);
-  writer.writeLong(offsets[1], object.order);
+  writer.writeLong(offsets[1], object.hashCode);
+  writer.writeLong(offsets[2], object.order);
 }
 
 Item _itemDeserialize(
@@ -82,7 +88,7 @@ Item _itemDeserialize(
 ) {
   final object = Item(
     description: reader.readStringOrNull(offsets[0]),
-    order: reader.readLongOrNull(offsets[1]),
+    order: reader.readLongOrNull(offsets[2]),
   );
   object.id = id;
   return object;
@@ -98,6 +104,8 @@ P _itemDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
+      return (reader.readLong(offset)) as P;
+    case 2:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -339,6 +347,58 @@ extension ItemQueryFilter on QueryBuilder<Item, Item, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Item, Item, QAfterFilterCondition> hashCodeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Item, Item, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -489,6 +549,18 @@ extension ItemQuerySortBy on QueryBuilder<Item, Item, QSortBy> {
     });
   }
 
+  QueryBuilder<Item, Item, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<Item, Item, QAfterSortBy> sortByOrder() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'order', Sort.asc);
@@ -512,6 +584,18 @@ extension ItemQuerySortThenBy on QueryBuilder<Item, Item, QSortThenBy> {
   QueryBuilder<Item, Item, QAfterSortBy> thenByDescriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'description', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
     });
   }
 
@@ -548,6 +632,12 @@ extension ItemQueryWhereDistinct on QueryBuilder<Item, Item, QDistinct> {
     });
   }
 
+  QueryBuilder<Item, Item, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
+
   QueryBuilder<Item, Item, QDistinct> distinctByOrder() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'order');
@@ -565,6 +655,12 @@ extension ItemQueryProperty on QueryBuilder<Item, Item, QQueryProperty> {
   QueryBuilder<Item, String?, QQueryOperations> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'description');
+    });
+  }
+
+  QueryBuilder<Item, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 

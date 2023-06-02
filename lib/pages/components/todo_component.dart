@@ -1,44 +1,39 @@
 import 'package:flutter/material.dart';
+
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/data_manager.dart';
-import '../../widgets/item_view.dart';
-import 'widgets/base_widgets/base_component.dart';
+
+import 'base_component.dart';
 import 'subcomponents/edit_todo_subcomponent.dart';
 import 'subcomponents/todo_subcomponent.dart';
 
-class TodoComponent extends StatefulWidget {
 
-  const TodoComponent({Key? key}) : super(key: key);
+class TodoComponent extends StatelessWidget {
 
-  @override
-  State<TodoComponent> createState() => _TodoComponentState();
-}
+  final TodoList list;
+  final void Function() updateList;
 
-class _TodoComponentState extends State<TodoComponent> {
-
-  late TodoList _list;
-  bool _isEditing = false;
+  const TodoComponent({ super.key, required this.list, required this.updateList });
 
   @override
   Widget build(BuildContext context) {
     return BaseComponent(
-      child: FutureBuilder<TodoList?>(
-        future: DataManager.getTodaysList(),
-        builder: (BuildContext context, AsyncSnapshot<TodoList?> snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              _list = snapshot.data!;
-              return _isEditing
-                ? EditTodoSubcomponent(list: _list, close: () { setState(() { _isEditing = false; });})
-                : TodoSubcomponent(list: _list, openEdit: () { setState(() { _isEditing = true; }); });
-            } else {
-              return Text("error!");
-            }
-          } else {
-            return Text("loading...");
-          }
-        },
-      )
+      initialRoute: 'todo/home',
+      onGenerateRoute: (RouteSettings settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case 'todo/home':
+            builder = (BuildContext context) =>  TodoSubcomponent(list: list);
+              break;
+          case 'todo/edit':
+            builder = (BuildContext context) => EditTodoSubcomponent(
+              list: list, updateList: updateList
+            );
+            break;
+          default:
+            throw Exception('Invalid route: ${settings.name}');
+        }
+        return MaterialPageRoute<void>(builder: builder, settings: settings);
+      }
     );
   }
 }

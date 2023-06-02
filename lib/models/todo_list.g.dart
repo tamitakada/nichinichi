@@ -21,6 +21,11 @@ const TodoListSchema = CollectionSchema(
       id: 0,
       name: r'date',
       type: IsarType.dateTime,
+    ),
+    r'hashCode': PropertySchema(
+      id: 1,
+      name: r'hashCode',
+      type: IsarType.long,
     )
   },
   estimateSize: _todoListEstimateSize,
@@ -78,6 +83,7 @@ void _todoListSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.date);
+  writer.writeLong(offsets[1], object.hashCode);
 }
 
 TodoList _todoListDeserialize(
@@ -102,6 +108,8 @@ P _todoListDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readDateTime(offset)) as P;
+    case 1:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -254,6 +262,59 @@ extension TodoListQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'date',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterFilterCondition> hashCodeEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hashCode',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hashCode',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -581,6 +642,18 @@ extension TodoListQuerySortBy on QueryBuilder<TodoList, TodoList, QSortBy> {
       return query.addSortBy(r'date', Sort.desc);
     });
   }
+
+  QueryBuilder<TodoList, TodoList, QAfterSortBy> sortByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterSortBy> sortByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
+    });
+  }
 }
 
 extension TodoListQuerySortThenBy
@@ -594,6 +667,18 @@ extension TodoListQuerySortThenBy
   QueryBuilder<TodoList, TodoList, QAfterSortBy> thenByDateDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'date', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterSortBy> thenByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TodoList, TodoList, QAfterSortBy> thenByHashCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hashCode', Sort.desc);
     });
   }
 
@@ -617,6 +702,12 @@ extension TodoListQueryWhereDistinct
       return query.addDistinctBy(r'date');
     });
   }
+
+  QueryBuilder<TodoList, TodoList, QDistinct> distinctByHashCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hashCode');
+    });
+  }
 }
 
 extension TodoListQueryProperty
@@ -630,6 +721,12 @@ extension TodoListQueryProperty
   QueryBuilder<TodoList, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
+    });
+  }
+
+  QueryBuilder<TodoList, int, QQueryOperations> hashCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hashCode');
     });
   }
 }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/data_manager.dart';
+import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
-import 'widgets/base_widgets/base_component.dart';
+import 'base_component.dart';
 import 'subcomponents/daily_calendar_subcomponent.dart';
 import 'subcomponents/edit_daily_subcomponent.dart';
+import 'package:nichinichi/global_widgets/logo_spinner.dart';
+import 'theme_component.dart';
+import 'package:nichinichi/overlay_manager.dart';
 
 class DailyComponent extends StatefulWidget {
 
   final void Function() updateTodoList;
+  final OverlayManager manager;
 
-  const DailyComponent({ super.key, required this.updateTodoList });
+  const DailyComponent({ super.key, required this.updateTodoList, required this.manager });
 
   @override
   State<DailyComponent> createState() => _DailyComponentState();
@@ -17,29 +21,51 @@ class DailyComponent extends StatefulWidget {
 
 class _DailyComponentState extends State<DailyComponent> {
 
-  int _dailyPage = 0;
   Daily? _currentDaily;
 
   @override
   Widget build(BuildContext context) {
     return BaseComponent(
-      child: FutureBuilder<List<Daily>?>(
-        future: DataManager.getAllDailies(),
-        builder: (BuildContext context, AsyncSnapshot<List<Daily>?> snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data != null) {
-              List<Daily> dailies = snapshot.data!;
-              return _dailyPage == 0
-                ? DailyCalendarSubcomponent(dailies: dailies, openEdit: (daily) { setState(() { _currentDaily = daily; _dailyPage = 1; });},)
-                : EditDailySubcomponent(daily: _currentDaily, close: () { widget.updateTodoList(); setState(() { _dailyPage = 0; });},);
-            } else {
-              return Text("ERROR Loading data");
-            }
-          } else {
-            return Text("loading...");
-          }
-        },
-      )
+      initialRoute: 'daily/calendar',
+      onGenerateRoute: (RouteSettings settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case 'daily/calendar':
+            builder = (BuildContext context) =>
+              FutureBuilder<List<Daily>?>(
+                future: DataManager.getAllDailies(),
+                builder: (BuildContext context, AsyncSnapshot<List<Daily>?> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data != null) {
+                      List<Daily> dailies = snapshot.data!;
+                      return DailyCalendarSubcomponent(
+                        dailies: dailies,
+                        manager: widget.manager,
+                        openEdit: (daily) {
+                          setState(() { _currentDaily = daily; });
+                          Navigator.of(context).pushNamed('daily/edit');
+                        }
+                      );
+                    } else {
+                      return Text("ERROR Loading data");
+                    }
+                  } else { return const Center(child: LogoSpinner()); }
+                },
+              );
+            break;
+          case 'daily/edit':
+            builder = (BuildContext context) => EditDailySubcomponent(
+              daily: _currentDaily, close: () { widget.updateTodoList(); Navigator.of(context).pop(); }
+            );
+            break;
+          case 'daily/theme':
+            builder = (BuildContext context) => ThemeComponent();
+            break;
+          default:
+            throw Exception('Invalid route: ${settings.name}');
+        }
+        return MaterialPageRoute<void>(builder: builder, settings: settings);
+      },
     );
   }
 }

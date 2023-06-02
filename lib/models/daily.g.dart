@@ -17,28 +17,23 @@ const DailySchema = CollectionSchema(
   name: r'Daily',
   id: -4740782094237137890,
   properties: {
-    r'color': PropertySchema(
+    r'archived': PropertySchema(
       id: 0,
+      name: r'archived',
+      type: IsarType.bool,
+    ),
+    r'color': PropertySchema(
+      id: 1,
       name: r'color',
       type: IsarType.string,
-    ),
-    r'endDate': PropertySchema(
-      id: 1,
-      name: r'endDate',
-      type: IsarType.dateTime,
     ),
     r'hashCode': PropertySchema(
       id: 2,
       name: r'hashCode',
       type: IsarType.long,
     ),
-    r'startDate': PropertySchema(
-      id: 3,
-      name: r'startDate',
-      type: IsarType.dateTime,
-    ),
     r'title': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'title',
       type: IsarType.string,
     )
@@ -82,11 +77,10 @@ void _dailySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.color);
-  writer.writeDateTime(offsets[1], object.endDate);
+  writer.writeBool(offsets[0], object.archived);
+  writer.writeString(offsets[1], object.color);
   writer.writeLong(offsets[2], object.hashCode);
-  writer.writeDateTime(offsets[3], object.startDate);
-  writer.writeString(offsets[4], object.title);
+  writer.writeString(offsets[3], object.title);
 }
 
 Daily _dailyDeserialize(
@@ -96,10 +90,9 @@ Daily _dailyDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Daily(
-    color: reader.readStringOrNull(offsets[0]) ?? "33CCD6",
-    endDate: reader.readDateTimeOrNull(offsets[1]),
-    startDate: reader.readDateTime(offsets[3]),
-    title: reader.readString(offsets[4]),
+    archived: reader.readBoolOrNull(offsets[0]) ?? false,
+    color: reader.readString(offsets[1]),
+    title: reader.readString(offsets[3]),
   );
   object.id = id;
   return object;
@@ -113,14 +106,12 @@ P _dailyDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset) ?? "33CCD6") as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readDateTime(offset)) as P;
-    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -216,6 +207,16 @@ extension DailyQueryWhere on QueryBuilder<Daily, Daily, QWhereClause> {
 }
 
 extension DailyQueryFilter on QueryBuilder<Daily, Daily, QFilterCondition> {
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'archived',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<Daily, Daily, QAfterFilterCondition> colorEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -344,75 +345,6 @@ extension DailyQueryFilter on QueryBuilder<Daily, Daily, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'endDate',
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'endDate',
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> endDateBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'endDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Daily, Daily, QAfterFilterCondition> hashCodeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -509,59 +441,6 @@ extension DailyQueryFilter on QueryBuilder<Daily, Daily, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> startDateEqualTo(
-      DateTime value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> startDateGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'startDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> startDateLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'startDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterFilterCondition> startDateBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'startDate',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -759,6 +638,18 @@ extension DailyQueryLinks on QueryBuilder<Daily, Daily, QFilterCondition> {
 }
 
 extension DailyQuerySortBy on QueryBuilder<Daily, Daily, QSortBy> {
+  QueryBuilder<Daily, Daily, QAfterSortBy> sortByArchived() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'archived', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterSortBy> sortByArchivedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'archived', Sort.desc);
+    });
+  }
+
   QueryBuilder<Daily, Daily, QAfterSortBy> sortByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -771,18 +662,6 @@ extension DailyQuerySortBy on QueryBuilder<Daily, Daily, QSortBy> {
     });
   }
 
-  QueryBuilder<Daily, Daily, QAfterSortBy> sortByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> sortByEndDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<Daily, Daily, QAfterSortBy> sortByHashCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hashCode', Sort.asc);
@@ -792,18 +671,6 @@ extension DailyQuerySortBy on QueryBuilder<Daily, Daily, QSortBy> {
   QueryBuilder<Daily, Daily, QAfterSortBy> sortByHashCodeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hashCode', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> sortByStartDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> sortByStartDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDate', Sort.desc);
     });
   }
 
@@ -821,6 +688,18 @@ extension DailyQuerySortBy on QueryBuilder<Daily, Daily, QSortBy> {
 }
 
 extension DailyQuerySortThenBy on QueryBuilder<Daily, Daily, QSortThenBy> {
+  QueryBuilder<Daily, Daily, QAfterSortBy> thenByArchived() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'archived', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterSortBy> thenByArchivedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'archived', Sort.desc);
+    });
+  }
+
   QueryBuilder<Daily, Daily, QAfterSortBy> thenByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -830,18 +709,6 @@ extension DailyQuerySortThenBy on QueryBuilder<Daily, Daily, QSortThenBy> {
   QueryBuilder<Daily, Daily, QAfterSortBy> thenByColorDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> thenByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> thenByEndDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endDate', Sort.desc);
     });
   }
 
@@ -869,18 +736,6 @@ extension DailyQuerySortThenBy on QueryBuilder<Daily, Daily, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Daily, Daily, QAfterSortBy> thenByStartDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QAfterSortBy> thenByStartDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<Daily, Daily, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -895,6 +750,12 @@ extension DailyQuerySortThenBy on QueryBuilder<Daily, Daily, QSortThenBy> {
 }
 
 extension DailyQueryWhereDistinct on QueryBuilder<Daily, Daily, QDistinct> {
+  QueryBuilder<Daily, Daily, QDistinct> distinctByArchived() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'archived');
+    });
+  }
+
   QueryBuilder<Daily, Daily, QDistinct> distinctByColor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -902,21 +763,9 @@ extension DailyQueryWhereDistinct on QueryBuilder<Daily, Daily, QDistinct> {
     });
   }
 
-  QueryBuilder<Daily, Daily, QDistinct> distinctByEndDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'endDate');
-    });
-  }
-
   QueryBuilder<Daily, Daily, QDistinct> distinctByHashCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'hashCode');
-    });
-  }
-
-  QueryBuilder<Daily, Daily, QDistinct> distinctByStartDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startDate');
     });
   }
 
@@ -935,27 +784,21 @@ extension DailyQueryProperty on QueryBuilder<Daily, Daily, QQueryProperty> {
     });
   }
 
+  QueryBuilder<Daily, bool, QQueryOperations> archivedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'archived');
+    });
+  }
+
   QueryBuilder<Daily, String, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'color');
     });
   }
 
-  QueryBuilder<Daily, DateTime?, QQueryOperations> endDateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'endDate');
-    });
-  }
-
   QueryBuilder<Daily, int, QQueryOperations> hashCodeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'hashCode');
-    });
-  }
-
-  QueryBuilder<Daily, DateTime, QQueryOperations> startDateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startDate');
     });
   }
 

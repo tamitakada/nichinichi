@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/data_manager.dart';
-import 'package:nichinichi/widgets/calendar.dart';
+import 'package:nichinichi/data_management/data_manager.dart';
+import 'package:nichinichi/pages/components/widgets/daily_widgets/calendar.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
+import 'package:nichinichi/global_widgets/dropdown_selector.dart';
+import 'package:nichinichi/overlay_manager.dart';
 
 class DailyCalendarSubcomponent extends StatefulWidget {
 
   final List<Daily> dailies;
   final void Function(Daily?) openEdit;
+  final OverlayManager manager;
 
-  const DailyCalendarSubcomponent({ super.key, required this.dailies, required this.openEdit });
+  const DailyCalendarSubcomponent({ super.key, required this.dailies, required this.manager, required this.openEdit });
 
   @override
   State<DailyCalendarSubcomponent> createState() => _DailyCalendarSubcomponentState();
@@ -20,25 +23,20 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
   Daily? _currentDaily;
   int _currentYear = DateTime.now().year;
   int _currentMonth = DateTime.now().month;
-  final _allMonths = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
 
-  List<DropdownMenuItem<int>> buildMonthItems() {
-    List<DropdownMenuItem<int>> items = [];
-    for (int i = 0; i < _allMonths.length; i++) {
-      items.add(DropdownMenuItem(value: i + 1, child: Text(_allMonths[i])));
-    }
-    return items;
+  final _allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  List<int> _getMonths() {
+    List<int> months = [];
+    for (int i = 0; i < _allMonths.length; i++) { months.add(i + 1); }
+    return months;
   }
 
-  List<DropdownMenuItem<int>> buildYearItems() {
-    List<DropdownMenuItem<int>> items = [];
+  List<int> _getYears() {
+    List<int> years = [];
     int currentYear = DateTime.now().year;
-    for (int i = 2023; i <= currentYear; i++) {
-      items.add(DropdownMenuItem(value: i, child: Text("$i")));
-    }
-    return items;
+    for (int i = 2023; i <= currentYear; i++) { years.add(i); }
+    return years;
   }
 
   @override
@@ -66,67 +64,44 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> {
               )
             ],
           ),
-          Row(
-            children: [
-              DropdownButton<Daily>(
-                value: _currentDaily,
-                items: widget.dailies.map((e) => DropdownMenuItem<Daily>(value: e, child: Text(e.title))).toList(),
-                onChanged: (Daily? daily) { setState(() { _currentDaily = daily; }); },
-                style: Theme.of(context).textTheme.bodyMedium,
-                dropdownColor: Colors.white30,
-                elevation: 0,
-                icon: const Icon(Icons.arrow_drop_down_rounded),
-                iconSize: 20,
-                iconEnabledColor: Colors.white,
-                underline: Container(
-                  height: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.white
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 20),
+            child: Row(
+              children: [
+                Container(
+                  width: 200,
+                  margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: DropdownSelector<Daily>(
+                    manager: widget.manager,
+                    options: widget.dailies,
+                    optionNames: widget.dailies.map((e) => e.title).toList(),
+                    initialSelection: _currentDaily,
+                    onChanged: (Daily? daily) { setState(() { _currentDaily = daily; }); }
                   ),
                 ),
-              ),
-              DropdownButton<int>(
-                value: _currentMonth,
-                items: buildMonthItems(),
-                onChanged: (int? month) {
-                  if (month != null) { setState(() { _currentMonth = month; }); }
-                },
-                style: Theme.of(context).textTheme.bodyMedium,
-                dropdownColor: Colors.white30,
-                elevation: 0,
-                icon: const Icon(Icons.arrow_drop_down_rounded),
-                iconSize: 20,
-                iconEnabledColor: Colors.white,
-                underline: Container(
-                  height: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.white
+                Container(
+                  width: 80,
+                  margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: DropdownSelector<int>(
+                    manager: widget.manager,
+                    options: _getMonths(),
+                    optionNames: _allMonths,
+                    initialSelection: _currentMonth,
+                    onChanged: (int? month) { setState(() { _currentMonth = month ?? 0; }); }
                   ),
                 ),
-              ),
-              DropdownButton<int>(
-                value: _currentYear,
-                items: buildYearItems(),
-                onChanged: (int? year) {
-                  if (year != null) { setState(() { _currentYear = year; }); }
-                },
-                style: Theme.of(context).textTheme.bodyMedium,
-                dropdownColor: Colors.white30,
-                elevation: 0,
-                icon: const Icon(Icons.arrow_drop_down_rounded),
-                iconSize: 20,
-                iconEnabledColor: Colors.white,
-                underline: Container(
-                  height: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.white
+                SizedBox(
+                  width: 80,
+                  child: DropdownSelector<int>(
+                    manager: widget.manager,
+                    options: _getYears(),
+                    optionNames: _getYears().map((e) => e.toString()).toList(),
+                    initialSelection: _currentYear,
+                    onChanged: (int? year) { setState(() { _currentYear = year ?? DateTime.now().year; }); }
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 10, 20),

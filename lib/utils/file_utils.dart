@@ -1,10 +1,12 @@
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'package:flutter/material.dart';
+
+import 'dart:io';
+
 
 class FileUtils {
 
-  // Path Finding
+  // Path
 
   static Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -23,15 +25,12 @@ class FileUtils {
     return file.writeAsString(data);
   }
 
-  static Future<String> readFile(String fileName) async {
+  static Future<String?> readFile(String fileName) async {
     try {
       final file = await localFile(fileName);
       final contents = await file.readAsString();
       return contents;
-    } catch (e) {
-      print("err"); // TODO: Error handling
-      return "";
-    }
+    } catch (e) { return null; }
   }
 
   static Future<Image?> readImageFile(String fileName) async {
@@ -41,6 +40,8 @@ class FileUtils {
       return null;
     } catch (e) { return null; }
   }
+
+  // Copy file
 
   static Future<File?> copyFile(File source, String fileName) async {
     try {

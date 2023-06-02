@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/data_manager.dart';
+import 'package:nichinichi/data_management/data_manager.dart';
 import '../widgets/todo_widgets/static_widgets.dart';
 import 'package:nichinichi/utils/extensions.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
@@ -8,9 +8,8 @@ import 'package:nichinichi/pages/components/widgets/base_widgets/component_heade
 class TodoSubcomponent extends StatefulWidget {
 
   final TodoList list;
-  final void Function() openEdit;
 
-  const TodoSubcomponent({ super.key, required this.list, required this.openEdit });
+  const TodoSubcomponent({ super.key, required this.list });
 
   @override
   State<TodoSubcomponent> createState() => _TodoSubcomponentState();
@@ -31,13 +30,8 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
   }
 
   @override
-  void initState() {
-    _setSortedLists();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _setSortedLists();
     return ListView.builder(
       itemCount: _sortedCompleteDailies.length + _sortedIncompleteDailies.length + _sortedCompleteSingles.length + _sortedIncompleteSingles.length + 4,
       itemBuilder: (BuildContext context, int index) {
@@ -49,8 +43,8 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
                 title: "TODAY'S TODOS",
                 actions: [
                   IconButton(
-                      onPressed: widget.openEdit,
-                      icon: const Icon(Icons.edit, color: Colors.white, size: 14)
+                    onPressed: () {Navigator.of(context).pushNamed('todo/edit'); },
+                    icon: const Icon(Icons.edit, color: Colors.white, size: 14)
                   )
                 ],
               ),
@@ -67,7 +61,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               Item toComplete = _sortedIncompleteDailies[index - 1];
               widget.list.completeDailies.add(toComplete);
               widget.list.incompleteDailies.remove(toComplete);
-              DataManager.upsertList(widget.list).then((success) { if (success) setState(() { _setSortedLists(); }); });
+              DataManager.upsertList(widget.list).then((success) { if (success) setState(() {}); });
             }
           );
         } else if (index == _sortedIncompleteDailies.length + 1) {
@@ -82,7 +76,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               Item toComplete = _sortedIncompleteSingles[index - widget.list.incompleteDailies.length - 2];
               widget.list.completeSingles.add(toComplete);
               widget.list.incompleteSingles.remove(toComplete);
-              DataManager.upsertList(widget.list).then((success) { if (success) setState(() {_setSortedLists();}); });
+              DataManager.upsertList(widget.list).then((success) { if (success) setState(() {}); });
             },
           );
         } else if (index == _sortedIncompleteDailies.length + _sortedIncompleteSingles.length + 2) {
@@ -97,7 +91,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               Item toUncomplete = _sortedCompleteDailies[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - 3];
               widget.list.incompleteDailies.add(toUncomplete);
               widget.list.completeDailies.remove(toUncomplete);
-              DataManager.upsertList(widget.list).then((success) { if (success) setState(() { _setSortedLists(); }); });
+              DataManager.upsertList(widget.list).then((success) { if (success) setState(() {}); });
             },
           );
         } else if (index < _sortedCompleteDailies.length + _sortedIncompleteDailies.length + _sortedCompleteSingles.length + _sortedIncompleteSingles.length + 3) {
@@ -107,7 +101,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> {
               Item toUncomplete = _sortedCompleteSingles[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - _sortedCompleteDailies.length - 3];
               widget.list.incompleteSingles.add(toUncomplete);
               widget.list.completeSingles.remove(toUncomplete);
-              DataManager.upsertList(widget.list).then((success) { if (success) setState(() { _setSortedLists(); }); });
+              DataManager.upsertList(widget.list).then((success) { if (success) setState(() {}); });
             },
           );
         } else { return const SizedBox(height: 20); }

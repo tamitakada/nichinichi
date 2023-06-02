@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
 
+
 extension ColorConverter on Color {
   static Color parse(String hexColor) {
     try { return Color(int.parse(hexColor, radix: 16) + 0xFF000000); }
     catch (e) { return Colors.white; }
   }
-
-  String toHex() {
-    return value.toRadixString(16);
-  }
+  String toHex() => value.toRadixString(16);
 }
 
 extension DailySort on Daily {

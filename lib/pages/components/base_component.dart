@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/painters/half_border.dart';
+import 'package:nichinichi/global_widgets/half_border.dart';
 
 class BaseComponent extends StatelessWidget {
 
-  final Widget child;
+  final String initialRoute;
+  final Route<dynamic>? Function(RouteSettings)? onGenerateRoute;
 
-  const BaseComponent({ super.key, required this.child });
+  const BaseComponent({
+    super.key,
+    required this.initialRoute,
+    this.onGenerateRoute
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,12 @@ class BaseComponent extends StatelessWidget {
             painter: HalfBorder(),
           );
         }),
-        child,
+        ClipRect(
+          child: Navigator(
+            initialRoute: initialRoute,
+            onGenerateRoute: onGenerateRoute
+          )
+        ),
       ]
     );
   }

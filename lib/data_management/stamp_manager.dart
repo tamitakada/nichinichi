@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'file_utils.dart';
+import '../utils/file_utils.dart';
 import 'package:nichinichi/constants.dart';
 
 class StampManager {

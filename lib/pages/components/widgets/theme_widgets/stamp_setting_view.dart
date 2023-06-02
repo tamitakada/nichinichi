@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
-import 'stamp_view.dart';
 import 'package:file_selector/file_selector.dart';
 import 'dart:io';
-import 'package:nichinichi/utils/stamp_manager.dart';
-import 'framed_button.dart';
+import 'package:nichinichi/data_management/stamp_manager.dart';
+import 'package:nichinichi/global_widgets/stamp_view.dart';
+import 'package:nichinichi/global_widgets/framed_button.dart';
 
 class StampSettingView extends StatefulWidget {
 

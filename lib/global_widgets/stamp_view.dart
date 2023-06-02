@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
-import 'package:nichinichi/utils/stamp_manager.dart';
+import 'package:nichinichi/data_management/stamp_manager.dart';
 
 class StampView extends StatelessWidget {
 

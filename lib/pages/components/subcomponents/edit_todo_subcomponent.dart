@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/data_manager.dart';
+import 'package:nichinichi/data_management/data_manager.dart';
 import '../widgets/todo_widgets/edit_widgets.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
+import 'package:nichinichi/utils/extensions.dart';
+
 
 class EditTodoSubcomponent extends StatefulWidget {
 
   final TodoList list;
-  final void Function() close;
+  final void Function() updateList;
 
-  const EditTodoSubcomponent({ super.key, required this.list, required this.close });
+  const EditTodoSubcomponent({ super.key, required this.list, required this.updateList });
 
   @override
   State<EditTodoSubcomponent> createState() => _EditTodoSubcomponentState();
@@ -23,14 +25,15 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
 
   @override
   void initState() {
-    _dailyItems = widget.list.incompleteDailies.toList();
-    _singleItems = widget.list.incompleteSingles.toList();
+    _dailyItems = widget.list.getSortedIncompleteDailies();
+    _singleItems = widget.list.getSortedIncompleteSingles();
     super.initState();
   }
 
   Future<void> _saveData() async {
     print(await DataManager.setDailies(widget.list, _dailyItems));
     print(await DataManager.setSingles(widget.list, _singleItems));
+    widget.updateList();
   }
 
   @override
@@ -44,7 +47,7 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ComponentHeaderView(
-                title: "TODAY'S TODOS",
+                title: "EDIT TODOS",
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -56,7 +59,7 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
                     icon: const Icon(Icons.add, color: Colors.white, size: 14,)
                   ),
                   IconButton(
-                    onPressed: () { _saveData().then((_) => widget.close()); },
+                    onPressed: () { _saveData().then((_) => Navigator.of(context).pop()); },
                     icon: const Icon(Icons.done_rounded, color: Colors.white, size: 14,)
                   )
                 ],

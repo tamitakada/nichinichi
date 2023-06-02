@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
-import 'package:nichinichi/painters/stamp.dart';
 import 'dart:math';
-import 'stamp_view.dart';
-import 'package:nichinichi/utils/stamp_manager.dart';
+import 'package:nichinichi/global_widgets/stamp_view.dart';
 
 class DayView extends StatelessWidget {
 

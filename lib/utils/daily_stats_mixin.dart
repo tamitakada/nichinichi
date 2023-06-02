@@ -1,8 +1,8 @@
 import 'package:nichinichi/models/models.dart';
 import '../constants.dart';
 
-mixin DailyStats {
 
+mixin DailyStats {
   CompletionLevel getDailyCompletionLevel(TodoList? list, Daily daily) {
     if (list != null) {
       int incomplete = 0;
@@ -15,13 +15,14 @@ mixin DailyStats {
       }
       if (incomplete == 0 && complete == 0) return CompletionLevel.noData;
       double fractionComplete = complete / (incomplete + complete);
-      if (fractionComplete == 0) { return CompletionLevel.none; }
-      else if (fractionComplete < 0.5) { return CompletionLevel.low; }
-      else if (fractionComplete < 0.8) { return CompletionLevel.medium; }
-      else if (fractionComplete < 1) { return CompletionLevel.high; }
-      else { return CompletionLevel.perfect; }
+      for (CompletionLevel level in CompletionLevel.values.reversed) {
+        double levelBar = Constants.levelToInt(level) / 100;
+        if (level == CompletionLevel.noData) { continue; }
+        else if (level == CompletionLevel.none || level == CompletionLevel.perfect) {
+          if (fractionComplete == levelBar) return level;
+        } else if (fractionComplete > levelBar) { return level; }
+      }
     }
     return CompletionLevel.noData;
   }
-
 }

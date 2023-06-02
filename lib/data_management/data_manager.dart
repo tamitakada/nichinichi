@@ -39,10 +39,8 @@ class DataManager {
 
   static Future<List<Daily>?> getActiveDailies() async {
     try {
-      DateTime now = DateTime.now();
       return await (await isar).dailys.filter()
-        .startDateLessThan(now).or().startDateEqualTo(now)
-        .endDateGreaterThan(now).or().endDateEqualTo(now)
+        .archivedEqualTo(false)
         .findAll();
     } catch (e) { print(e); return null; }
   }
@@ -99,7 +97,7 @@ class DataManager {
         items[counter].order = counter;
         if (!daily.items.contains(items[counter])) {
           toAdd.add(items[counter]);
-          if (list != null && daily.shouldAddDaily(list.date)) {
+          if (list != null && !daily.archived) {
             list.incompleteDailies.add(items[counter]);
           }
         }
@@ -175,6 +173,15 @@ class DataManager {
       } catch (e) { print(e); return false; }
     }
     return false;
+  }
+
+  static Future<bool> upsertDaily(Daily daily) async {
+    try {
+      (await isar).writeTxn(() async {
+        (await isar).dailys.put(daily);
+      });
+      return true;
+    } catch (e) { print(e); return false; }
   }
 
   static Future<bool> upsertList(TodoList list) async {
