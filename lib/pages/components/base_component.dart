@@ -22,7 +22,8 @@ class BaseComponent extends StatelessWidget {
             painter: HalfBorder(),
           );
         }),
-        ClipRect(
+        ClipRRect(
+          borderRadius: const BorderRadius.only(topRight: Radius.circular(10)),
           child: Navigator(
             initialRoute: initialRoute,
             onGenerateRoute: onGenerateRoute

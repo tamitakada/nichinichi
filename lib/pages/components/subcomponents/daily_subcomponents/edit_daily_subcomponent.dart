@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:nichinichi/data_management/data_manager.dart';
-import 'package:nichinichi/global_widgets/framed_button.dart';
-import 'package:nichinichi/models/models.dart';
-import 'package:nichinichi/pages/components/widgets/todo_widgets/edit_widgets.dart';
-import 'package:nichinichi/utils/extensions.dart';
-import 'package:nichinichi/constants.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
+import 'package:nichinichi/constants.dart';
+import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/utils/error_management.dart';
+import 'package:nichinichi/utils/confirmation_mixin.dart';
+
+import 'package:nichinichi/data_management/data_manager.dart';
+import 'package:nichinichi/models/models.dart';
+
+import 'package:nichinichi/pages/components/widgets/todo_widgets/edit_widgets.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
-import 'package:nichinichi/abstract_classes/error_management.dart';
 
 
 class EditDailySubcomponent extends StatefulWidget {
@@ -22,7 +25,7 @@ class EditDailySubcomponent extends StatefulWidget {
   State<EditDailySubcomponent> createState() => _EditDailySubcomponentState();
 }
 
-class _EditDailySubcomponentState extends State<EditDailySubcomponent> with ErrorMixin {
+class _EditDailySubcomponentState extends State<EditDailySubcomponent> with ErrorMixin, ConfirmationMixin {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
@@ -77,22 +80,41 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
       children: [
         ComponentHeaderView(
           title: "MANAGE DAILY",
-          leadingAction: IconButton(onPressed: widget.close, icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)),
+          leadingAction: IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(
+              Icons.arrow_back_ios, color: Colors.white, size: 18,
+            )
+          ),
           actions: [
             widget.daily != null ? IconButton(
-                onPressed: () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close()),
-                icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 20)
+              onPressed: () {
+                showConfirmation(
+                  "Deleting will also remove all past records.",
+                  widget.manager,
+                  () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close()),
+                );
+              },
+              icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 20)
             ) : Container(),
             widget.daily != null ? IconButton(
-                onPressed: () {
-                  if (widget.daily!.archived) { _unarchive().then((_) => widget.close()); }
-                  else { _archive().then((_) => widget.close()); }
-                },
-                icon: Icon(
-                  widget.daily!.archived ? Icons.unarchive_outlined : Icons.archive_outlined,
-                  color: widget.daily!.archived ? Constants.yellow : Constants.red,
-                  size: 20
-                )
+              onPressed: () {
+                if (widget.daily!.archived) {
+                  _unarchive().then((_) => widget.close());
+                }
+                else {
+                  showConfirmation(
+                    "Archiving will keep past records available but will stop adding these tasks to your to do lists.",
+                    widget.manager,
+                    () => _archive().then((_) => widget.close()),
+                  );
+                }
+              },
+              icon: Icon(
+                widget.daily!.archived ? Icons.unarchive_outlined : Icons.archive_outlined,
+                color: widget.daily!.archived ? Constants.yellow : Constants.red,
+                size: 20
+              )
             ) : Container(),
             IconButton(
               onPressed: () => _saveData().then((_) => widget.close()),
@@ -137,7 +159,7 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
                 child: TextField(
                   controller: _nameController,
                   style: Theme.of(context).textTheme.bodyMedium,
-                  decoration: const InputDecoration(hintText: "DAILY TITLE",),
+                  decoration: const InputDecoration(hintText: "DAILY TITLE"),
                 ),
               )
             ],

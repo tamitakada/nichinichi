@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/utils/pair.dart';
 
-import 'package:nichinichi/abstract_classes/error_management.dart';
+import 'package:nichinichi/utils/error_management.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
 
@@ -40,6 +42,17 @@ class _HomePageState extends State<HomePage> with ErrorMixin implements OverlayM
   bool isOverlayOpen() => _overlayChild.value != null;
 
   @override
+  void initState() {
+    DateTime now = DateTime.now();
+    DateTime midnight = DateTime(now.year, now.month, now.day, 24, 0);
+    Timer(
+      midnight.difference(now),
+      () => setState(() { _list = DataManager.getTodaysList(); })
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -61,14 +74,22 @@ class _HomePageState extends State<HomePage> with ErrorMixin implements OverlayM
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: TodoComponent(list: snapshot.data!, updateList: updateList)),
+                        Expanded(
+                          flex: 2,
+                          child: TodoComponent(
+                            list: snapshot.data!,
+                            updateList: updateList,
+                            manager: this,
+                          )
+                        ),
                         const SizedBox(width: 20),
                         Flexible(
-                          flex: 2,
+                          flex: 3,
                           child: Container(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: DailyComponent(manager: this, updateTodoList: updateList)
+                            constraints: const BoxConstraints(maxWidth: 750),
+                            child: DailyComponent(manager: this, updateList: updateList)
                           ),
                         ),
                       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:nichinichi/constants.dart';
-import 'package:nichinichi/abstract_classes/error_management.dart';
+import 'package:nichinichi/utils/error_management.dart';
 
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
@@ -14,10 +14,10 @@ import 'package:nichinichi/global_widgets/logo_spinner.dart';
 
 class DailyComponent extends StatefulWidget {
 
-  final void Function() updateTodoList;
+  final void Function() updateList;
   final OverlayManager manager;
 
-  const DailyComponent({ super.key, required this.updateTodoList, required this.manager });
+  const DailyComponent({ super.key, required this.updateList, required this.manager });
 
   @override
   State<DailyComponent> createState() => _DailyComponentState();
@@ -42,13 +42,18 @@ class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
                   if (snapshot.hasData) {
                     if (snapshot.data != null) {
                       List<Daily> dailies = snapshot.data!;
-                      return DailyCalendarSubcomponent(
-                        dailies: dailies,
-                        manager: widget.manager,
-                        openEdit: (daily) {
-                          setState(() { _currentDaily = daily; });
-                          Navigator.of(context).pushNamed('daily/edit');
-                        }
+                      return Container(
+                        color: Constants.bgColor,
+                        child: dailies.length > 0
+                          ? DailyCalendarSubcomponent(
+                            dailies: dailies,
+                            manager: widget.manager,
+                            openEdit: (daily) {
+                              setState(() { _currentDaily = daily; });
+                              Navigator.of(context).pushNamed('daily/edit');
+                            }
+                          )
+                          : EmptyDailySubcomponent(),
                       );
                     } else {
                       showError(widget.manager, ErrorType.fetch);
@@ -59,12 +64,23 @@ class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
               );
             break;
           case 'daily/edit':
-            builder = (BuildContext context) => EditDailySubcomponent(
-              daily: _currentDaily, manager: widget.manager, close: () { widget.updateTodoList(); Navigator.of(context).pop(); }
+            builder = (BuildContext context) => Container(
+              color: Constants.bgColor,
+              child: EditDailySubcomponent(
+                daily: _currentDaily,
+                manager: widget.manager,
+                close: () {
+                  widget.updateList();
+                  Navigator.of(context).pop();
+                }
+              ),
             );
             break;
           case 'daily/theme':
-            builder = (BuildContext context) => ThemeSubcomponent(manager: widget.manager);
+            builder = (BuildContext context) => Container(
+              color: Constants.bgColor,
+              child: ThemeSubcomponent(manager: widget.manager)
+            );
             break;
           default:
             throw Exception('Invalid route: ${settings.name}');

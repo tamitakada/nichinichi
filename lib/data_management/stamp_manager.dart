@@ -16,25 +16,16 @@ class StampManager {
     return Image.asset("assets/${_defaultStamps[level]}.png", fit: BoxFit.cover, width: double.infinity, height: double.infinity);
   }
 
-  static Future<Image> updateStampImage(CompletionLevel level, File imageFile) async {
+  static Future<File?> updateStampImage(CompletionLevel level, File imageFile) async {
     try {
       File? file = await FileUtils.copyFile(imageFile, "stamp-$level");
-      if (file != null) {
-        return Image.file(file, fit: BoxFit.cover, width: double.infinity, height: double.infinity);
-      }
-      return getDefaultStampImage(level);
-    }
-    catch (e) { return getDefaultStampImage(level); }
+      return file;
+    } catch (e) { return null; }
   }
 
-  static Future<Image> getStampImage(CompletionLevel level) async {
-    try {
-      Image? image = await FileUtils.readImageFile("stamp-$level");
-      if (image != null) { return image; }
-      else { return getDefaultStampImage(level); }
-    } catch (e) {
-      return getDefaultStampImage(level);
-    }
+  static Future<Image?> getStampImage(CompletionLevel level) async {
+    try { return await FileUtils.readImageFile("stamp-$level"); }
+    catch (e) { return null; }
   }
 
 }

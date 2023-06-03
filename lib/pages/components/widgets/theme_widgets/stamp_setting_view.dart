@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_management/stamp_manager.dart';
 import 'package:nichinichi/global_widgets/stamp_view.dart';
-import 'package:nichinichi/abstract_classes/error_management.dart';
+import 'package:nichinichi/utils/error_management.dart';
 import 'package:nichinichi/global_widgets/logo_spinner.dart';
 
 
@@ -23,7 +24,21 @@ class StampSettingView extends StatefulWidget {
 
 class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
 
-  late Future<Image> _currentImage;
+  late Future<Image?> _currentImage;
+
+  Future<Image?> getImage(String path) async {
+    File? file = await StampManager.updateStampImage(widget.level, File(path));
+    imageCache.clear();
+    imageCache.clearLiveImages();
+    return file != null
+      ? Image.file(
+        file,
+        key: UniqueKey(),
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity
+      ) : null;
+  }
 
   void _selectNewImage() {
     try {
@@ -33,13 +48,7 @@ class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
       );
       openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]).then(
         (file) {
-          if (file != null) {
-            setState(() {
-              _currentImage = StampManager.updateStampImage(
-                widget.level, File(file.path)
-              );
-            });
-          }
+          if (file != null) { setState((){ _currentImage = getImage(file.path); }); }
         }
       );
     } catch (e) { showError(widget.manager, ErrorType.other); }
@@ -54,6 +63,7 @@ class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
   @override
   Widget build(BuildContext context) {
     imageCache.clear();
+    imageCache.clearLiveImages();
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -61,9 +71,9 @@ class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
         children: [
           AspectRatio(
             aspectRatio: 0.85,
-            child: FutureBuilder<Image>(
+            child: FutureBuilder<Image?>(
               future: _currentImage,
-              builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<Image?> snapshot) {
                 if (snapshot.hasData) {
                   return StampView(
                     level: widget.level,

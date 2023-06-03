@@ -251,14 +251,20 @@ class DataManager {
     try {
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
+      TodoList? list = await getTodaysList();
       for (int i = daily.items.length - 1; i >= 0; i--) {
+        Item item = daily.items.elementAt(i);
         List<TodoList> lists = await getListsWithDailyItem(daily.items.elementAt(i)) ?? [];
         if (lists.isEmpty || (lists.length == 1 && lists[0].date.isAtSameMomentAs(today))) {
-          await deleteItem(daily.items.elementAt(i));
+          await deleteItem(item);
         }
+        list?.incompleteDailies.remove(item);
+        list?.completeDailies.remove(item);
       }
       (await isar).writeTxn(() async {
         (await isar).dailys.delete(daily.id);
+        list?.incompleteDailies.save();
+        list?.completeDailies.save();
       });
       return true;
     } catch (e) { print(e); return false; }

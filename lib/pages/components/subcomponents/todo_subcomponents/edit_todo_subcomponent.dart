@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:nichinichi/constants.dart';
+
+import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/utils/error_management.dart';
+
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
+
 import '../../widgets/todo_widgets/edit_widgets.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
-import 'package:nichinichi/utils/extensions.dart';
 
 
-class EditTodoSubcomponent extends StatefulWidget {
+class EditTodoSubcomponent extends StatefulWidget with ErrorMixin {
 
   final TodoList list;
+  final OverlayManager manager;
   final void Function() updateList;
 
-  const EditTodoSubcomponent({ super.key, required this.list, required this.updateList });
+  const EditTodoSubcomponent({ super.key, required this.list,required this.manager, required this.updateList });
 
   @override
   State<EditTodoSubcomponent> createState() => _EditTodoSubcomponentState();
 }
 
-class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
+class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> with ErrorMixin {
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   List<Item> _dailyItems = [];
@@ -31,9 +37,10 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
   }
 
   Future<void> _saveData() async {
-    print(await DataManager.setDailies(widget.list, _dailyItems));
-    print(await DataManager.setSingles(widget.list, _singleItems));
-    widget.updateList();
+    if (!await DataManager.setDailies(widget.list, _dailyItems) ||
+        !await DataManager.setSingles(widget.list, _singleItems)) {
+      showError(widget.manager, ErrorType.save);
+    } else { widget.updateList(); }
   }
 
   @override
@@ -47,6 +54,10 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ComponentHeaderView(
+                leadingAction: IconButton(
+                  onPressed: () { Navigator.of(context).pop(); },
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 14),
+                ),
                 title: "EDIT TODOS",
                 actions: [
                   IconButton(
@@ -64,10 +75,11 @@ class _EditTodoSubcomponentState extends State<EditTodoSubcomponent> {
                   )
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text("DAILY", style: Theme.of(context).textTheme.headlineSmall),
-              ),
+              _dailyItems.isNotEmpty
+                ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text("DAILY", style: Theme.of(context).textTheme.headlineSmall),
+                ) : Container()
             ],
           );
         } else if (index <= _dailyItems.length) {

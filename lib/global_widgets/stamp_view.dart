@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_management/stamp_manager.dart';
 
+
 class StampView extends StatelessWidget {
 
   final CompletionLevel level;
-  final Image? image;
+  final Image image;
 
-  const StampView({ super.key, required this.level, this.image });
+  const StampView({ super.key, required this.level, required this.image });
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +16,7 @@ class StampView extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Stack(
         children: [
-          image
-          ?? FutureBuilder<Image>(
-            future: StampManager.getStampImage(level),
-            builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
-              if (snapshot.hasData) { return snapshot.data ?? Container(); }
-              else {
-                return Container();
-              }
-            },
-          ),
+          image,
           Container(
             margin: const EdgeInsets.all(5),
             decoration: BoxDecoration(

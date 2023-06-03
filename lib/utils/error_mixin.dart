@@ -1,4 +1,4 @@
-import 'overlay_manager.dart';
+import 'abstract_classes/overlay_manager.dart';
 import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/global_widgets/error_view.dart';
 import 'package:flutter/material.dart';

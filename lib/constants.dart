@@ -26,6 +26,11 @@ class Constants {
   static const yellow = Color.fromRGBO(228, 220, 16, 1);
   static const red = Color.fromRGBO(251, 74, 74, 1);
 
+  static const monthNames = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+
   static String errorToString(ErrorType type) {
     switch (type) {
       case ErrorType.save: return "Unable to Save Data";
