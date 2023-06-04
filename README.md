@@ -1,11 +1,11 @@
 # Nichi Collection 4: Nichinichi
 
 **Nichinichi** is a simple task management app built with Flutter.
-Available for MacOS/Linux/Windows.
+Now distributing for MacOS [here](https://tamitakada.github.io/nichinichi-website/) with Windows/Linux coming soon.
 
 ## Features
 * Fresh todo list everyday
-* Past to do list stats
+* Past to do list records
 * **Dailies** to track long-term habits and auto-add daily tasks
 * Customizable stamps to celebrate task completion
 * Sleek & simple design
