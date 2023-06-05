@@ -13,8 +13,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'
-          dart-sdk-version: '>=3.0.1 <4.0.0' 
+          channel: 'beta'
 
       - name: Checkout code
         uses: actions/checkout@v2
