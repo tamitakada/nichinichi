@@ -18,7 +18,7 @@ class ConfirmationView extends StatelessWidget {
     return Center(
       child: Container(
         width: 250,
-        height: 300,
+        height: 280,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -43,7 +43,7 @@ class ConfirmationView extends StatelessWidget {
                   const SizedBox(height: 20),
                   Text(
                     message,
-                    textAlign: TextAlign.justify,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 30),
@@ -58,11 +58,13 @@ class ConfirmationView extends StatelessWidget {
                   onTap: () {
                     if (onCancel != null) onCancel!();
                   },
+                  color: Constants.yellow,
                 ),
                 const SizedBox(width: 20),
                 FramedButton(
                   text: "OK",
                   onTap: onConfirm,
+                  color: Constants.yellow,
                 )
               ],
             )

@@ -8,7 +8,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowTitle('Nichinichi');
-    setWindowMinSize(const Size(920, 200));
+    setWindowMinSize(const Size(900, 200));
+    setWindowFrame(const Rect.fromLTWH(0, 0, 1000, 650));
   }
   runApp(const MyApp());
 }

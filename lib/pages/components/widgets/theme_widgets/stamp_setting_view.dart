@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_management/stamp_manager.dart';
 import 'package:nichinichi/global_widgets/stamp_view.dart';
 import 'package:nichinichi/utils/error_management.dart';
-import 'package:nichinichi/global_widgets/logo_spinner.dart';
 
 
 class StampSettingView extends StatefulWidget {
@@ -79,7 +77,7 @@ class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
                     level: widget.level,
                     image: snapshot.data ?? StampManager.getDefaultStampImage(widget.level)
                   );
-                } else { return const Center(child: LogoSpinner()); }
+                } else { return Container(); }
               },
             )
           ),
@@ -94,7 +92,7 @@ class _StampSettingViewState extends State<StampSettingView> with ErrorMixin {
             Constants.getLevelPercentageString(widget.level).toUpperCase(),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.normal
+              fontSize: 12
             ),
           ),
           const SizedBox(height: 10),
