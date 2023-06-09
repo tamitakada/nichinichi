@@ -13,36 +13,40 @@ class ThemeSubcomponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 20, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                onPressed: () { Navigator.of(context).pop(); },
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () { Navigator.of(context).pop(); },
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 16),
+                  ),
+                  Text("THEME", style: Theme.of(context).textTheme.headlineMedium),
+                ],
               ),
-              Text("THEME", style: Theme.of(context).textTheme.headlineMedium),
+              const SizedBox(height: 20),
+              Text("COMPLETION STAMPS", style: Theme.of(context).textTheme.headlineSmall),
+              Row(
+                children: [
+                  CompletionLevel.perfect,
+                  CompletionLevel.high,
+                  CompletionLevel.medium,
+                  CompletionLevel.low
+                ].map(
+                  (value) => Expanded(
+                    child: StampSettingView(manager: manager, level: value)
+                  )
+                ).toList(),
+              )
             ],
           ),
-          const SizedBox(height: 20),
-          Text("COMPLETION STAMPS", style: Theme.of(context).textTheme.headlineSmall),
-          Row(
-            children: [
-              CompletionLevel.perfect,
-              CompletionLevel.high,
-              CompletionLevel.medium,
-              CompletionLevel.low
-            ].map(
-              (value) => Expanded(
-                child: StampSettingView(manager: manager, level: value)
-              )
-            ).toList(),
-          )
-        ],
-      ),
+        ),
+      ]
     );
   }
 }

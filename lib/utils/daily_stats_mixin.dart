@@ -1,8 +1,28 @@
 import 'package:nichinichi/models/models.dart';
 import '../constants.dart';
+import 'extensions.dart';
 
 
 mixin DailyStats {
+
+  List<Item> getSortedCompleteDailyItems(TodoList list, Daily daily) {
+    List<Item> items = list.getSortedCompletedDailies();
+    List<Item> relevantItems = [];
+    for (Item item in items) {
+      if (item.daily.value == daily) relevantItems.add(item);
+    }
+    return relevantItems;
+  }
+
+  List<Item> getSortedIncompleteDailyItems(TodoList list, Daily daily) {
+    List<Item> items = list.getSortedIncompleteDailies();
+    List<Item> relevantItems = [];
+    for (Item item in items) {
+      if (item.daily.value == daily) relevantItems.add(item);
+    }
+    return relevantItems;
+  }
+
   CompletionLevel getDailyCompletionLevel(TodoList? list, Daily daily) {
     if (list != null) {
       int incomplete = 0;

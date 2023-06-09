@@ -44,7 +44,8 @@ class _HomePageState extends State<HomePage> with ErrorMixin implements OverlayM
   @override
   void initState() {
     DateTime now = DateTime.now();
-    DateTime midnight = DateTime(now.year, now.month, now.day, 24, 0);
+    DateTime tomorrow = now.add(const Duration(days: 1));
+    DateTime midnight = DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0);
     Timer(
       midnight.difference(now),
       () => setState(() { _list = DataManager.getTodaysList(); })
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> with ErrorMixin implements OverlayM
             title: Text("NICHINICHI", style: Theme.of(context).textTheme.headlineLarge,),
             backgroundColor: Constants.bgColor,
             elevation: 0,
+            scrolledUnderElevation: 0,
           ),
           backgroundColor: Constants.bgColor,
           body: FutureBuilder<TodoList?>(

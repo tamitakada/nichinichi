@@ -63,6 +63,17 @@ class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
                 },
               );
             break;
+          case 'daily/record':
+            Map<String, dynamic> args = settings.arguments as Map<String, dynamic>;
+            builder = (BuildContext context) => Container(
+              color: Constants.bgColor,
+              child: DailyRecordSubcomponent(
+                list: args['list'] as TodoList,
+                daily: args['daily'] as Daily,
+                manager: widget.manager,
+              ),
+            );
+            break;
           case 'daily/edit':
             builder = (BuildContext context) => Container(
               color: Constants.bgColor,

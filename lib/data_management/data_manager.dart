@@ -175,6 +175,28 @@ class DataManager {
     return false;
   }
 
+  static Future<bool> changeDailyCompletion(TodoList list, Item item, bool toComplete) async {
+    if (toComplete) {
+      list.completeDailies.add(item);
+      list.incompleteDailies.remove(item);
+    } else {
+      list.incompleteDailies.add(item);
+      list.completeDailies.remove(item);
+    }
+    return await upsertList(list);
+  }
+
+  static Future<bool> changeSingleCompletion(TodoList list, Item item, bool toComplete) async {
+    if (toComplete) {
+      list.completeSingles.add(item);
+      list.incompleteSingles.remove(item);
+    } else {
+      list.incompleteSingles.add(item);
+      list.completeSingles.remove(item);
+    }
+    return await upsertList(list);
+  }
+
   static Future<bool> upsertDaily(Daily daily) async {
     try {
       (await isar).writeTxn(() async {

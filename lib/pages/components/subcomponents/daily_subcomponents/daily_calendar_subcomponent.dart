@@ -44,6 +44,15 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> w
     for (int i = 2023; i <= currentYear; i++) { years.add(i); }
     return years;
   }
+  
+  void _goToRecord(TodoList list) {
+    if (_currentDaily != null) {
+      Navigator.of(context).pushNamed(
+        'daily/record',
+        arguments: {'daily': _currentDaily, 'list': list}
+      ).then((_) => setState(() {}));
+    }
+  }
 
   @override
   void initState() {
@@ -123,6 +132,7 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> w
                       date: DateTime(_currentYear, _currentMonth),
                       completionData: snapshot.data!,
                       daily: _currentDaily!,
+                      onTap: _goToRecord,
                     );
                   } else {
                     showError(widget.manager, ErrorType.fetch);

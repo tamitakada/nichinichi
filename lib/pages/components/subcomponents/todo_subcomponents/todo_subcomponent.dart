@@ -36,8 +36,17 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> with ErrorMixin {
     _sortedIncompleteSingles = widget.list.getSortedIncompleteSingles();
   }
 
-  void _upsertList() {
-    DataManager.upsertList(widget.list).then(
+  void _changeSingleCompletion(Item item, bool toComplete) {
+    DataManager.changeSingleCompletion(widget.list, item, toComplete).then(
+      (success) {
+        if (success) { setState(() {}); }
+        else { showError(widget.manager, ErrorType.save); }
+      }
+    );
+  }
+
+  void _changeDailyCompletion(Item item, bool toComplete) {
+    DataManager.changeDailyCompletion(widget.list, item, toComplete).then(
       (success) {
         if (success) { setState(() {}); }
         else { showError(widget.manager, ErrorType.save); }
@@ -59,7 +68,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> with ErrorMixin {
                 title: "TODAY'S TODOS",
                 actions: [
                   IconButton(
-                    onPressed: () {Navigator.of(context).pushNamed('todo/edit'); },
+                    onPressed: () { Navigator.of(context).pushNamed('todo/edit'); },
                     icon: const Icon(Icons.edit, color: Colors.white, size: 14)
                   )
                 ],
@@ -74,12 +83,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> with ErrorMixin {
         } else if (index <= _sortedIncompleteDailies.length) {
           return IncompleteItemView(
             item: _sortedIncompleteDailies[index - 1],
-            onTap: () {
-              Item toComplete = _sortedIncompleteDailies[index - 1];
-              widget.list.completeDailies.add(toComplete);
-              widget.list.incompleteDailies.remove(toComplete);
-              _upsertList();
-            }
+            onTap: () => _changeDailyCompletion(_sortedIncompleteDailies[index - 1], true)
           );
         } else if (index == _sortedIncompleteDailies.length + 1) {
           return Padding(
@@ -95,12 +99,7 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> with ErrorMixin {
         } else if (index < _sortedIncompleteDailies.length + _sortedIncompleteSingles.length + 2) {
           return IncompleteItemView(
             item: _sortedIncompleteSingles[index - widget.list.incompleteDailies.length - 2],
-            onTap: () {
-              Item toComplete = _sortedIncompleteSingles[index - widget.list.incompleteDailies.length - 2];
-              widget.list.completeSingles.add(toComplete);
-              widget.list.incompleteSingles.remove(toComplete);
-              _upsertList();
-            },
+            onTap: () => _changeSingleCompletion(_sortedIncompleteSingles[index - widget.list.incompleteDailies.length - 2], true)
           );
         } else if (index == _sortedIncompleteDailies.length + _sortedIncompleteSingles.length + 2) {
           return _sortedCompleteSingles.isNotEmpty || _sortedCompleteDailies.isNotEmpty ?
@@ -111,22 +110,12 @@ class _TodoSubcomponentState extends State<TodoSubcomponent> with ErrorMixin {
         } else if (index < _sortedIncompleteDailies.length + _sortedIncompleteSingles.length + _sortedCompleteDailies.length + 3) {
           return CompleteItemView(
             item:  _sortedCompleteDailies[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - 3],
-            onTap: () {
-              Item toUncomplete = _sortedCompleteDailies[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - 3];
-              widget.list.incompleteDailies.add(toUncomplete);
-              widget.list.completeDailies.remove(toUncomplete);
-              _upsertList();
-            },
+            onTap: () => _changeDailyCompletion(_sortedCompleteDailies[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - 3], false),
           );
         } else if (index < _sortedCompleteDailies.length + _sortedIncompleteDailies.length + _sortedCompleteSingles.length + _sortedIncompleteSingles.length + 3) {
           return CompleteItemView(
             item: _sortedCompleteSingles[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - _sortedCompleteDailies.length - 3],
-            onTap: () {
-              Item toUncomplete = _sortedCompleteSingles[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - _sortedCompleteDailies.length - 3];
-              widget.list.incompleteSingles.add(toUncomplete);
-              widget.list.completeSingles.remove(toUncomplete);
-              _upsertList();
-            },
+            onTap: () => _changeSingleCompletion(_sortedCompleteSingles[index - _sortedIncompleteDailies.length - _sortedIncompleteSingles.length - _sortedCompleteDailies.length - 3], false),
           );
         } else { return const SizedBox(height: 20); }
       }
