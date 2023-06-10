@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: '>=3.0.1 <4.0.0'
@@ -27,6 +27,7 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+
 dependencies:
   flutter:
     sdk: flutter
@@ -36,14 +37,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   path_provider: ^2.0.15
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
   flutter_colorpicker: ^1.0.3
   file_selector: ^0.9.3
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
 
 dev_dependencies:
   flutter_test:
@@ -56,36 +57,19 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   isar_generator: ^3.1.0+1
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
+  msix: ^3.14.2
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/perfect.png
     - assets/high.png
     - assets/medium.png
     - assets/low.png
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
   fonts:
     - family: TimeMachine
       fonts:
@@ -95,6 +79,12 @@ flutter:
         - asset: fonts/ZenMaruGothic-Regular.ttf
         - asset: fonts/ZenMaruGothic-Bold.ttf
           weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+
+msix_config:
+  display_name: Nichinichi
+  publisher: kotaomi
+  publisher_display_name: Kota Omi
+  identity_name: com.example.nichinichi
+  msix_version: 1.0.1.0
+  logo_path: assets/logo.png
+  store: true
