@@ -82,7 +82,7 @@ flutter:
 
 msix_config:
   display_name: Nichinichi
-  publisher: kotaomi
+  publisher: Kota Omi
   publisher_display_name: Kota Omi
   identity_name: com.example.nichinichi
   msix_version: 1.0.1.0
