@@ -22,7 +22,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Windows
-        run: flutter build windows
+        run: dart run msix:create
       
       - name: Create Artifact
         uses: actions/upload-artifact@v2
