@@ -84,7 +84,7 @@ msix_config:
   display_name: Nichinichi
   publisher: CN=B1986A7B-B4FC-49A0-882C-CDBAEDBE58A9
   publisher_display_name: Kota Omi
-  identity_name: com.example.nichinichi
+  identity_name: 17551KotaOmi.Nichinichi
   msix_version: 1.0.1.0
   logo_path: assets/logo.png
   store: true
