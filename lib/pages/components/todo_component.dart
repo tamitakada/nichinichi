@@ -6,7 +6,7 @@ import 'package:nichinichi/utils/abstract_classes/overlay_manager.dart';
 import 'package:nichinichi/models/models.dart';
 
 import 'base_component.dart';
-import 'subcomponents/todo_subcomponents/todo_subcomponents.dart';
+import 'subcomponents/todo_subcomponents/todo_subcomponent.dart';
 
 
 class TodoComponent extends StatelessWidget {
@@ -27,15 +27,9 @@ class TodoComponent extends StatelessWidget {
           case 'todo/home':
             builder = (BuildContext context) =>  Container(
               color: Constants.bgColor,
-              child: TodoSubcomponent(list: list, manager: manager)
-            );
-            break;
-          case 'todo/edit':
-            builder = (BuildContext context) => Container(
-              color: Constants.bgColor,
-              child: EditTodoSubcomponent(
+              child: TodoSubcomponent(
                 list: list, updateList: updateList, manager: manager
-              ),
+              )
             );
             break;
           default:

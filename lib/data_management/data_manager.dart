@@ -113,11 +113,11 @@ class DataManager {
         if (lists == null || lists.isEmpty || (lists.length == 1 && lists[0] == list)) {
           toDelete.add(item);
         }
-        daily.items.remove(item);
         list?.incompleteDailies.remove(item);
         list?.completeDailies.remove(item);
       }
     }
+    daily.items.removeAll(toDelete);
 
     if (await upsertItems(items) && await deleteItems(toDelete)) {
       try {
@@ -134,26 +134,28 @@ class DataManager {
   }
 
   static Future<bool> setDailies(TodoList list, List<Item> items) async {
-    for (int i = list.incompleteDailies.length - 1; i >= 0; i--) {
-      Item item = list.incompleteDailies.elementAt(i);
-      if (!items.contains(item)) {
-        list.incompleteDailies.remove(item);
+    int counter = 0;
+    while (counter < list.incompleteDailies.length) {
+      Item item = list.incompleteDailies.elementAt(counter);
+      int index = items.indexOf(item);
+      if (index == -1) { list.incompleteDailies.remove(item); }
+      else {
+        item.order = index;
+        counter++;
       }
     }
-    return await upsertList(list);
+    return await upsertItems(list.incompleteDailies.toList()) && await upsertList(list);
   }
 
   static Future<bool> setSingles(TodoList list, List<Item> items) async {
     int counter = 0;
     List<Item> toAdd = [];
     while (counter < items.length) {
-      if (items[counter].description?.isNotEmpty ?? false) {
-        items[counter].order = counter;
-        if (!list.incompleteSingles.contains(items[counter])) {
-          toAdd.add(items[counter]);
-        }
-        counter++;
-      } else { items.removeAt(counter); }
+      items[counter].order = counter;
+      if (!list.incompleteSingles.contains(items[counter])) {
+        toAdd.add(items[counter]);
+      }
+      counter++;
     }
     List<Item> toDelete = [];
     for (int i = list.incompleteSingles.length - 1; i >= 0; i--) {

@@ -7,10 +7,13 @@ import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/utils/error_management.dart';
 
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
-import 'package:nichinichi/pages/components/widgets/todo_widgets/static_widgets.dart';
-import 'package:nichinichi/utils/extensions.dart';
+import 'package:nichinichi/pages/components/widgets/todo_widgets/todo_widgets.dart';
+
 import 'package:nichinichi/utils/daily_stats_mixin.dart';
 import 'package:nichinichi/utils/confirmation_mixin.dart';
+
+import 'package:nichinichi/pages/components/widgets/todo_widgets/static_item_view.dart';
+
 
 class DailyRecordSubcomponent extends StatefulWidget {
 
@@ -27,19 +30,6 @@ class DailyRecordSubcomponent extends StatefulWidget {
 }
 
 class _DailyRecordSubcomponentState extends State<DailyRecordSubcomponent> with DailyStats, ConfirmationMixin, ErrorMixin  {
-
-  void _changeSingleCompletion(Item item, bool toComplete) {
-    showConfirmation(
-      "You're editing a past to do list record.",
-      widget.manager,
-      () => DataManager.changeSingleCompletion(widget.list, item, toComplete).then(
-        (success) {
-          if (success) { setState(() {}); }
-          else { showError(widget.manager, ErrorType.save); }
-        }
-      )
-    );
-  }
 
   void _changeCompletionStatus(Item item, bool toComplete) {
     showConfirmation(
@@ -75,7 +65,7 @@ class _DailyRecordSubcomponentState extends State<DailyRecordSubcomponent> with 
     for (int i = 0; i < sortedIncompleteItems.length; i++) {
       Item item = sortedIncompleteItems[i];
       incompleteItems.add(
-        IncompleteItemView(
+        StaticItemView(
           item: item,
           onTap: () => _changeCompletionStatus(item, true)
         )
@@ -89,7 +79,7 @@ class _DailyRecordSubcomponentState extends State<DailyRecordSubcomponent> with 
     return ListView(
       children: [
         ComponentHeaderView(
-          title: "DAILY RECORD",
+          title: "DAILY RECORD ${widget.list.date.month}/${widget.list.date.day}/${widget.list.date.year}",
           leadingAction: IconButton(
             onPressed: Navigator.of(context).pop,
             icon: const Icon(

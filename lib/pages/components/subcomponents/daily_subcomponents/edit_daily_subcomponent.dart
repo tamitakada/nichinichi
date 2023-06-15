@@ -9,7 +9,7 @@ import 'package:nichinichi/utils/confirmation_mixin.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
 
-import 'package:nichinichi/pages/components/widgets/todo_widgets/edit_widgets.dart';
+import 'package:nichinichi/pages/components/widgets/todo_widgets/todo_widgets.dart';
 import 'package:nichinichi/pages/components/widgets/base_widgets/component_header_view.dart';
 
 
@@ -27,10 +27,9 @@ class EditDailySubcomponent extends StatefulWidget {
 
 class _EditDailySubcomponentState extends State<EditDailySubcomponent> with ErrorMixin, ConfirmationMixin {
 
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
   final TextEditingController _nameController = TextEditingController();
   late List<Item> _items;
+  int? _toAnimate;
 
   Color _currentColor = Colors.white;
 
@@ -72,6 +71,12 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
         !await DataManager.setDailyItems(daily, _items)) {
       showError(widget.manager, ErrorType.save);
     }
+  }
+
+  void _reorderItem(int oldIndex, int newIndex) {
+    Item item = _items[oldIndex];
+    _items.removeAt(oldIndex);
+    _items.insert(newIndex - (oldIndex < newIndex ? 1 : 0), item);
   }
 
   @override
@@ -171,8 +176,10 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
             Text("TASKS", style: Theme.of(context).textTheme.headlineSmall,),
             IconButton(
               onPressed: () {
-                _items.add(Item(description: ""));
-                _listKey.currentState!.insertItem(_items.length - 1);
+                setState(() {
+                  _items.add(Item(description: ""));
+                  _toAnimate = _items.length - 1;
+                });
               },
               icon: const Icon(Icons.add, color: Colors.white, size: 14)
             )
@@ -180,22 +187,23 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
         ),
         const SizedBox(height: 10),
         Expanded(
-          child: AnimatedList(
-            key: _listKey,
-            initialItemCount: _items.length,
-            itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-              return ItemEditView(
+          child: ReorderableListView.builder(
+            buildDefaultDragHandles: false,
+            proxyDecorator: (Widget child, _, __) => child,
+            itemCount: _items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ItemView(
+                key: Key('$index'),
                 item: _items[index],
+                index: index,
                 daily: widget.daily,
-                animation: animation,
-                onChanged: (String updated) => _items[index].description = updated,
-                onDismissed: () {
-                  _items.removeAt(index);
-                  _listKey.currentState!.removeItem(index, (context, animation) => Container());
-                },
+                animate: index == _toAnimate,
+                onSubmitted: (String updated) => _items[index].description = updated,
+                onDismissed: () => setState((){ _items.removeAt(index); }),
                 color: _currentColor,
               );
             },
+            onReorder: _reorderItem,
           ),
         )
       ],

@@ -34,11 +34,7 @@ class CalendarView extends StatelessWidget with DailyStats {
         days.add(
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                if (level != CompletionLevel.noData && completionData[day] != null) {
-                  onTap(completionData[day]!);
-                }
-              },
+              onTap: () => onTap(completionData[day]!),
               child: DayView(day: day, level: level)
             )
           )
