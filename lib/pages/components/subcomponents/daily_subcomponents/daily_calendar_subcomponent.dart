@@ -5,6 +5,7 @@ import 'package:nichinichi/constants.dart';
 import 'package:nichinichi/data_management/data_manager.dart';
 import 'package:nichinichi/models/models.dart';
 import 'package:nichinichi/utils/error_management.dart';
+import 'package:nichinichi/utils/confirmation_mixin.dart';
 
 import 'package:nichinichi/global_widgets/dropdown_selector.dart';
 import 'package:nichinichi/global_widgets/logo_spinner.dart';
@@ -26,7 +27,7 @@ class DailyCalendarSubcomponent extends StatefulWidget {
   State<DailyCalendarSubcomponent> createState() => _DailyCalendarSubcomponentState();
 }
 
-class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> with ErrorMixin {
+class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> with ErrorMixin, ConfirmationMixin {
 
   Daily? _currentDaily;
   int _currentYear = DateTime.now().year;
@@ -45,12 +46,31 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> w
     return years;
   }
   
-  void _goToRecord(TodoList list) {
+  void _goToRecord(DateTime date, TodoList? list) {
     if (_currentDaily != null) {
-      Navigator.of(context).pushNamed(
-        'daily/record',
-        arguments: {'daily': _currentDaily, 'list': list}
-      ).then((_) => setState(() {}));
+      if (list != null) {
+        Navigator.of(context).pushNamed(
+          'daily/record',
+          arguments: {'daily': _currentDaily, 'list': list}
+        ).then((_) => setState(() {}));
+      } else {
+        showConfirmation(
+          "No data exists for this day. Create new record?",
+          widget.manager,
+          () {
+            DataManager.insertList(date).then(
+              (newList) {
+                if (newList != null) {
+                  Navigator.of(context).pushNamed(
+                    'daily/record',
+                    arguments: {'daily': _currentDaily, 'list': newList}
+                  ).then((_) => setState(() {}));
+                } else { showError(widget.manager, ErrorType.save); }
+              }
+            );
+          }
+        );
+      }
     }
   }
 

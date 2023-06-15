@@ -13,10 +13,14 @@ class CalendarView extends StatelessWidget with DailyStats {
   final DateTime date;
   final Daily daily;
   final Map<int, TodoList> completionData;
-  final void Function(TodoList) onTap;
+  final void Function(DateTime, TodoList?) onTap;
 
   const CalendarView({
-    super.key, required this.date, required this.daily, required this.completionData, required this.onTap
+    super.key,
+    required this.date,
+    required this.daily,
+    required this.completionData,
+    required this.onTap
   });
 
   List<Widget> buildWeek(BuildContext context, int firstWeekday, int firstDay, int lastWeekday) {
@@ -34,7 +38,14 @@ class CalendarView extends StatelessWidget with DailyStats {
         days.add(
           Expanded(
             child: GestureDetector(
-              onTap: () => onTap(completionData[day]!),
+              onTap: () {
+                DateTime selected = DateTime(date.year, date.month, day);
+                DateTime now = DateTime.now();
+                DateTime today = DateTime(now.year, now.month, now.day);
+                if (selected.isBefore(today) && !selected.isAtSameMomentAs(today)) {
+                  onTap(selected, completionData[day]);
+                }
+              },
               child: DayView(day: day, level: level)
             )
           )

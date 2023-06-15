@@ -30,7 +30,7 @@ class EmptyItemView extends StatelessWidget {
                 ),
               ),
               const Icon(
-                Icons.edit,
+                Icons.add,
                 color: Colors.white54,
                 size: 12,
               ),
