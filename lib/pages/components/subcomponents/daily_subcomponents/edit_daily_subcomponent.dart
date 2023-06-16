@@ -46,6 +46,12 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
   Future<void> _archive() async {
     if (widget.daily != null) {
       if (!await DataManager.archiveDaily(widget.daily!)) {
@@ -88,7 +94,7 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
           leadingAction: IconButton(
             onPressed: Navigator.of(context).pop,
             icon: const Icon(
-              Icons.arrow_back_ios, color: Colors.white, size: 18,
+              Icons.arrow_back_ios, color: Colors.white, size: 16,
             )
           ),
           actions: [
@@ -97,10 +103,17 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
                 showConfirmation(
                   "Deleting will also remove all past records.",
                   widget.manager,
-                  () => DataManager.deleteDaily(widget.daily!).then((_) => widget.close()),
+                  () {
+                    DataManager.deleteDaily(widget.daily!).then(
+                      (success) {
+                        if (success) { widget.close(); }
+                        else { showError(widget.manager, ErrorType.save); }
+                      }
+                    );
+                  },
                 );
               },
-              icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 20)
+              icon: const Icon(Icons.delete_outline_rounded, color: Constants.red, size: 16)
             ) : Container(),
             widget.daily != null ? IconButton(
               onPressed: () {
@@ -118,12 +131,12 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
               icon: Icon(
                 widget.daily!.archived ? Icons.unarchive_outlined : Icons.archive_outlined,
                 color: widget.daily!.archived ? Constants.yellow : Constants.red,
-                size: 20
+                size: 16
               )
             ) : Container(),
             IconButton(
               onPressed: () => _saveData().then((_) => widget.close()),
-              icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 20)
+              icon: const Icon(Icons.save_alt_rounded, color: Colors.white, size: 16)
             ),
           ],
         ),
@@ -149,7 +162,7 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
                               labelTypes: const [],
                               colorPickerWidth: 250,
                               enableAlpha: false,
-                              onColorChanged: (color) { setState(() { _currentColor = color; }); },
+                              onColorChanged: (color) => setState(() { _currentColor = color; }),
                             ),
                           ),
                         )
@@ -189,7 +202,7 @@ class _EditDailySubcomponentState extends State<EditDailySubcomponent> with Erro
         Expanded(
           child: ReorderableListView.builder(
             buildDefaultDragHandles: false,
-            proxyDecorator: (Widget child, _, __) => child,
+            proxyDecorator: (child, _, __) => child,
             itemCount: _items.length,
             itemBuilder: (BuildContext context, int index) {
               return ItemView(

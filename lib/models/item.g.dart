@@ -45,6 +45,12 @@ const ItemSchema = CollectionSchema(
       name: r'daily',
       target: r'Daily',
       single: true,
+    ),
+    r'archivedDaily': LinkSchema(
+      id: -2307594667476349036,
+      name: r'archivedDaily',
+      target: r'Daily',
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -117,12 +123,14 @@ Id _itemGetId(Item object) {
 }
 
 List<IsarLinkBase<dynamic>> _itemGetLinks(Item object) {
-  return [object.daily];
+  return [object.daily, object.archivedDaily];
 }
 
 void _itemAttach(IsarCollection<dynamic> col, Id id, Item object) {
   object.id = id;
   object.daily.attach(col, col.isar.collection<Daily>(), r'daily', id);
+  object.archivedDaily
+      .attach(col, col.isar.collection<Daily>(), r'archivedDaily', id);
 }
 
 extension ItemQueryWhereSort on QueryBuilder<Item, Item, QWhere> {
@@ -532,6 +540,19 @@ extension ItemQueryLinks on QueryBuilder<Item, Item, QFilterCondition> {
   QueryBuilder<Item, Item, QAfterFilterCondition> dailyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'daily', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterFilterCondition> archivedDaily(
+      FilterQuery<Daily> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'archivedDaily');
+    });
+  }
+
+  QueryBuilder<Item, Item, QAfterFilterCondition> archivedDailyIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedDaily', 0, true, 0, true);
     });
   }
 }

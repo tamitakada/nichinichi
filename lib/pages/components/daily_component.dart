@@ -29,7 +29,7 @@ class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BaseComponent(
+    return BaseNavigatorComponent(
       initialRoute: 'daily/calendar',
       onGenerateRoute: (RouteSettings settings) {
         WidgetBuilder builder;
@@ -53,7 +53,7 @@ class _DailyComponentState extends State<DailyComponent> with ErrorMixin {
                               Navigator.of(context).pushNamed('daily/edit');
                             }
                           )
-                          : EmptyDailySubcomponent(),
+                          : const EmptyDailySubcomponent(),
                       );
                     } else {
                       showError(widget.manager, ErrorType.fetch);

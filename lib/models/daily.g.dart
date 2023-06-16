@@ -51,6 +51,13 @@ const DailySchema = CollectionSchema(
       target: r'Item',
       single: false,
       linkName: r'daily',
+    ),
+    r'archivedItems': LinkSchema(
+      id: -5597481409654112877,
+      name: r'archivedItems',
+      target: r'Item',
+      single: false,
+      linkName: r'archivedDaily',
     )
   },
   embeddedSchemas: {},
@@ -123,12 +130,14 @@ Id _dailyGetId(Daily object) {
 }
 
 List<IsarLinkBase<dynamic>> _dailyGetLinks(Daily object) {
-  return [object.items];
+  return [object.items, object.archivedItems];
 }
 
 void _dailyAttach(IsarCollection<dynamic> col, Id id, Daily object) {
   object.id = id;
   object.items.attach(col, col.isar.collection<Item>(), r'items', id);
+  object.archivedItems
+      .attach(col, col.isar.collection<Item>(), r'archivedItems', id);
 }
 
 extension DailyQueryWhereSort on QueryBuilder<Daily, Daily, QWhere> {
@@ -633,6 +642,63 @@ extension DailyQueryLinks on QueryBuilder<Daily, Daily, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(
           r'items', lower, includeLower, upper, includeUpper);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItems(
+      FilterQuery<Item> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'archivedItems');
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItemsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedItems', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItemsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedItems', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItemsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedItems', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItemsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedItems', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition>
+      archivedItemsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'archivedItems', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Daily, Daily, QAfterFilterCondition> archivedItemsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'archivedItems', lower, includeLower, upper, includeUpper);
     });
   }
 }

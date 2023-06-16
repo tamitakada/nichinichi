@@ -39,11 +39,13 @@ class CalendarView extends StatelessWidget with DailyStats {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                DateTime selected = DateTime(date.year, date.month, day);
-                DateTime now = DateTime.now();
-                DateTime today = DateTime(now.year, now.month, now.day);
-                if (selected.isBefore(today) && !selected.isAtSameMomentAs(today)) {
-                  onTap(selected, completionData[day]);
+                if (!daily.archived) {
+                  DateTime selected = DateTime(date.year, date.month, day);
+                  DateTime now = DateTime.now();
+                  DateTime today = DateTime(now.year, now.month, now.day);
+                  if (selected.isBefore(today) && !selected.isAtSameMomentAs(today)) {
+                    onTap(selected, completionData[day]);
+                  }
                 }
               },
               child: DayView(day: day, level: level)

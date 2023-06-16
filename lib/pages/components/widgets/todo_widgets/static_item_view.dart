@@ -30,8 +30,8 @@ class StaticItemView extends StatelessWidget {
                 width: 15, height: 15,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: item.daily.value != null
-                    ? ColorConverter.parse(item.daily.value!.color)
+                  color: item.daily.value != null || item.archivedDaily.value != null
+                    ? ColorConverter.parse(item.daily.value?.color ?? item.archivedDaily.value!.color)
                     : Colors.white30
                 ),
               ),

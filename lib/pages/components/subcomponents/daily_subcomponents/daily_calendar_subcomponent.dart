@@ -58,12 +58,12 @@ class _DailyCalendarSubcomponentState extends State<DailyCalendarSubcomponent> w
           "No data exists for this day. Create new record?",
           widget.manager,
           () {
-            DataManager.insertList(date).then(
-              (newList) {
-                if (newList != null) {
+            DataManager.upsertPastListForDaily(date, _currentDaily!).then(
+              (pastList) {
+                if (pastList != null) {
                   Navigator.of(context).pushNamed(
                     'daily/record',
-                    arguments: {'daily': _currentDaily, 'list': newList}
+                    arguments: {'daily': _currentDaily, 'list': pastList}
                   ).then((_) => setState(() {}));
                 } else { showError(widget.manager, ErrorType.save); }
               }

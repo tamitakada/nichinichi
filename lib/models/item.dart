@@ -12,6 +12,7 @@ class Item {
   int? order;
 
   final daily = IsarLink<Daily>();
+  final archivedDaily = IsarLink<Daily>();
 
   Item({ this.description, this.order });
 

@@ -47,7 +47,9 @@ extension ListSort on TodoList {
 extension Sort on List<Item> {
   void sortItems() {
     sort((item1, item2) {
-      int compareDaily = item1.daily.value?.id.compareTo(item2.daily.value?.id ?? -1) ?? 0;
+      Daily? daily1 = item1.daily.value ?? item1.archivedDaily.value;
+      Daily? daily2 = item2.daily.value ?? item2.archivedDaily.value;
+      int compareDaily = daily1?.id.compareTo(daily2?.id ?? -1) ?? 0;
       return compareDaily != 0 ? compareDaily : item1.order?.compareTo(item2.order ?? -1) ?? 0;
     });
   }

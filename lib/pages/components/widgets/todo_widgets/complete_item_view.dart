@@ -18,8 +18,8 @@ class CompleteItemView extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: item.daily.value != null
-            ? ColorConverter.parse(item.daily.value!.color).withAlpha(30)
+          color: item.daily.value != null || item.archivedDaily.value != null
+            ? ColorConverter.parse(item.daily.value?.color ?? item.archivedDaily.value!.color).withAlpha(30)
             : Colors.white24,
         ),
         margin: const EdgeInsets.fromLTRB(0, 5, 20, 5),
@@ -27,8 +27,8 @@ class CompleteItemView extends StatelessWidget {
         child: Text(
           item.description ?? "",
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: item.daily.value != null
-              ? ColorConverter.parse(item.daily.value!.color)
+            color: item.daily.value != null || item.archivedDaily.value != null
+              ? ColorConverter.parse(item.daily.value?.color ?? item.archivedDaily.value!.color)
               : Colors.white,
           )
         ),

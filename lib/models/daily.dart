@@ -12,8 +12,11 @@ class Daily {
   String color;
   bool archived;
 
-  @Backlink(to: "daily")
+  @Backlink(to: 'daily')
   final items = IsarLinks<Item>();
+
+  @Backlink(to: 'archivedDaily')
+  final archivedItems = IsarLinks<Item>();
 
   Daily({ required this.title, required this.color, this.archived = false });
 
