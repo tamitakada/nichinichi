@@ -3,8 +3,8 @@
 **Nichinichi** is a simple task management app built with Flutter.  
 
 Download for macOS and Windows:
-* [macOS](https://tamitakada.github.io/nichinichi-website/)
-* [Windows](https://apps.microsoft.com/store/detail/nichinichi/9N51824D8BGV)
+* [macOS](https://tamitakada.github.io/nichinichi-website/) [v. 1.1.1]
+* [Windows](https://apps.microsoft.com/store/detail/nichinichi/9N51824D8BGV) [v. 1.0.1]
 
 ## Features
 * Fresh todo list everyday
