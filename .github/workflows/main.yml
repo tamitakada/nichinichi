@@ -3,7 +3,7 @@ name: Build Windows
 on:
   push:
     branches:
-      - main  # Replace with your branch name
+      - main
 
 jobs:
   build:
